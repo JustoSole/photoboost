@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
+import { trackFormSubmission } from '../utils/analytics'
 import './BetaOffer.css'
 
 const BetaOffer = () => {
@@ -65,12 +66,10 @@ const BetaOffer = () => {
       await sendToWeb3Forms()
       
       // Enviar evento a Google Analytics
-      if (window.gtag) {
-        window.gtag('event', 'beta_signup', {
-          event_category: 'engagement',
-          event_label: 'Form Submitted'
-        })
-      }
+      trackFormSubmission({
+        businessSize: formData.businessSize,
+        monthlyPhotos: formData.monthlyPhotos
+      })
       
       setShowThankYouModal(true)
       setSubmitStatus('success')

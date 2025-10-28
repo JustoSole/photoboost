@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react'
+import { trackCTAClick } from '../utils/analytics'
 import './MobileCTA.css'
 
 const MobileCTA = () => {
   const [isVisible, setIsVisible] = useState(true)
+
+  const handleCTAClick = () => {
+    trackCTAClick('Mejorar mis fotos ahora', 'mobile_cta_fixed')
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +33,7 @@ const MobileCTA = () => {
 
   return (
     <div className={`mobile-cta ${isVisible ? 'visible' : 'hidden'}`}>
-      <a href="#beta" className="btn btn-primary btn-block">
+      <a href="#beta" className="btn btn-primary btn-block" onClick={handleCTAClick}>
         Mejorar mis fotos ahora
       </a>
     </div>

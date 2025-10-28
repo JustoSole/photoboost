@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+import { trackCTAClick, trackComparisonInteraction } from '../utils/analytics'
 import './Hero.css'
 
 const examples = [
@@ -52,13 +53,21 @@ const Hero = () => {
   }
 
   const nextExample = () => {
-    setCurrentIndex((prev) => (prev + 1) % examples.length)
+    const newIndex = (currentIndex + 1) % examples.length
+    setCurrentIndex(newIndex)
     setSliderPosition(50)
+    trackComparisonInteraction(newIndex + 1)
   }
 
   const prevExample = () => {
-    setCurrentIndex((prev) => (prev - 1 + examples.length) % examples.length)
+    const newIndex = (currentIndex - 1 + examples.length) % examples.length
+    setCurrentIndex(newIndex)
     setSliderPosition(50)
+    trackComparisonInteraction(newIndex + 1)
+  }
+
+  const handleCTAClick = () => {
+    trackCTAClick('Aplicar a la beta gratuita', 'hero_section')
   }
 
   const currentExample = examples[currentIndex]
@@ -168,7 +177,7 @@ const Hero = () => {
           transition={{ duration: 0.4, delay: 0.4 }}
           className="hero-cta"
         >
-          <a href="#beta" className="btn btn-primary btn-large">
+          <a href="#beta" className="btn btn-primary btn-large" onClick={handleCTAClick}>
             Aplicar a la beta gratuita →
           </a>
           <p className="cta-subtext">Sin tarjeta. Sin compromiso. Cupos limitados.</p>

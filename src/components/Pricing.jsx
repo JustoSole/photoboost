@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { FiCheck } from 'react-icons/fi'
+import { trackPricingClick } from '../utils/analytics'
 import './Pricing.css'
 
 const plans = [
@@ -57,6 +58,10 @@ const plans = [
 const Pricing = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 })
 
+  const handlePlanClick = (planName, price) => {
+    trackPricingClick(planName, price)
+  }
+
   return (
     <section className="pricing" id="pricing" ref={ref}>
       <div className="container">
@@ -111,6 +116,7 @@ const Pricing = () => {
               <a 
                 href="#beta" 
                 className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'} btn-block`}
+                onClick={() => handlePlanClick(plan.name, plan.price)}
               >
                 {plan.cta}
               </a>
