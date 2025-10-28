@@ -19,40 +19,51 @@ const BATCH_SIZE = 3;  // Procesar en lotes para control de tasa
 const RATE_LIMIT_DELAY = 2000;  // 2 segundos entre requests
 const MAX_RETRIES = 3;  // Reintentos en caso de error temporal
 
-// Prompt optimizado: CORE enhancement + corrección sutil de perspectiva
-const ENHANCEMENT_PROMPT = `You are an expert real estate photo editor using AI.
+// Prompt optimizado: CORE enhancement preservando dimensiones
+const ENHANCEMENT_PROMPT = `You are an expert professional photographer specializing in real estate photography.
 
-Enhance this image realistically to create a professional, consistent real estate photography look. 
-PRIORITY: Focus on lighting, color, and sharpness improvements. Do NOT add, remove, or modify any elements.
+Your mission: Transform this photo into a magazine-quality real estate image while keeping it realistic and natural-looking.
 
-### PRIMARY GOALS (MOST IMPORTANT):
-- Make the photo significantly brighter, cleaner, and sharper.
-- Boost vibrant colors and saturation naturally (especially skies, greenery, and warm tones).
-- Create dramatic lighting improvements while maintaining realistic appearance.
-- Lift shadows and balance exposure to reveal hidden details.
+### CRITICAL RULES (NEVER BREAK):
+- Keep the EXACT same dimensions, framing, and angle
+- Do NOT crop, resize, or change perspective
+- Do NOT add or remove any elements
+- Make it look like it was taken by a professional photographer with perfect lighting
 
-### SECONDARY: Subtle angle correction (if needed):
-- If the horizon looks crooked, straighten it subtly
-- If walls appear tilted, make them more vertical
-- Improve the viewing angle to showcase the space better
-- Keep changes minimal - lighting and color are MORE IMPORTANT
+### MAIN IMPROVEMENTS:
 
-### Style guide:
-- **Exterior:** Clear bright daylight, vivid natural colors, enhanced sky contrast, pop landscaping.
-- **Interior:** Warm bright lighting, clean crisp walls, inviting atmosphere, no overexposure.
-- **Shadows:** Lift dark areas significantly while keeping natural depth and dimension.
-- **Colors:** Enhance saturation selectively - blues, greens, and warm wood tones should pop.
+**Lighting & Exposure:**
+- Brighten dark areas to reveal hidden details
+- Balance bright spots and shadows for natural look
+- Create even, professional lighting throughout
+- Fix overexposed or underexposed areas
 
-### Key improvements (IN ORDER OF PRIORITY):
-1. Brighten dark corners and shadowy areas dramatically
-2. Enhance natural light to simulate perfect shooting conditions  
-3. Boost color vibrancy without looking artificial
-4. Sharpen architectural details and textures
-5. Fix obvious crooked angles if present (but keep subtle)
+**Sky (If visible):**
+- Make the sky clear, bright blue, and realistic
+- Remove gray or dull skies - make them pop naturally
+- Keep it looking like a beautiful sunny day
+- NEVER make the sky look fake or oversaturated
 
-### Output:
-- Professional, vibrant real estate photo with excellent lighting and color.
-- Natural but dramatically improved from original with better composition.`;
+**Vegetation (If outdoors):**
+- Enhance existing vegetation naturally based on what's already in the photo
+- Make greens richer and more vibrant but realistic
+- Improve grass, trees, bushes, and plants that are already visible
+- Keep it natural - don't add vegetation that wasn't there
+- Make landscaping look healthy and well-maintained
+
+**Colors & Details:**
+- Enhance colors to look vibrant but natural
+- Boost warm tones on wood and surfaces
+- Sharpen architectural details and textures
+- Make the property look its absolute best
+
+**Overall Look:**
+- Interior shots: Warm, inviting, bright, and spacious feeling
+- Exterior shots: Dramatic, clear sky, vibrant landscaping, professional real estate look
+- Balance everything so it looks professionally shot, not artificially edited
+
+### Remember:
+This should look like a top-tier real estate photographer took this photo on the perfect day with perfect equipment. Natural, beautiful, and professional - not overprocessed or fake.`;
 
 // Función para calcular el aspect ratio más cercano soportado por Gemini
 function getBestAspectRatio(width, height) {
@@ -288,13 +299,24 @@ async function convertAndOptimizeImage(imagePath) {
     
     console.log(`   🎯 Optimizando para Gemini: ${metadata.width}x${metadata.height} → ${targetWidth}x${targetHeight} (${selectedRatio})`);
     
-    // PROCESAMIENTO ÓPTIMO PARA GEMINI
+    // PROCESAMIENTO ÓPTIMO PARA GEMINI - PRESERVANDO DIMENSIONES ORIGINALES
+    // Calcular tamaño que mantenga aspect ratio original
+    const maxDimension = 1600;
+    let finalWidth = metadata.width;
+    let finalHeight = metadata.height;
+    
+    // Redimensionar SOLO si es necesario para mantener bajo 7MB, sin cambiar aspect ratio
+    if (metadata.width > maxDimension || metadata.height > maxDimension) {
+      const scale = Math.min(maxDimension / metadata.width, maxDimension / metadata.height);
+      finalWidth = Math.round(metadata.width * scale);
+      finalHeight = Math.round(metadata.height * scale);
+      console.log(`   📐 Redimensionando para mantener ratio: ${metadata.width}x${metadata.height} → ${finalWidth}x${finalHeight}`);
+    }
+    
     let processedImage = sharpInstance
-      .resize({
-        width: targetWidth,
-        height: targetHeight,
-        fit: 'cover',  // Crop to exact dimensions for optimal Gemini input
-        position: 'center'
+      .resize(finalWidth, finalHeight, {
+        withoutEnlargement: true,  // No agrandar si ya es pequeño
+        fit: 'inside'  // Mantener aspect ratio original
       })
       .jpeg({ 
         quality: 92,  // Alta calidad para mejor input a Gemini
@@ -309,11 +331,9 @@ async function convertAndOptimizeImage(imagePath) {
     if (convertedBuffer.length > MAX_IMAGE_SIZE) {
       console.log(`   📉 Ajustando calidad para tamaño límite...`);
       processedImage = sharpInstance
-        .resize({
-          width: targetWidth,
-          height: targetHeight,
-          fit: 'cover',
-          position: 'center'
+        .resize(finalWidth, finalHeight, {
+          withoutEnlargement: true,
+          fit: 'inside'
         })
         .jpeg({ 
           quality: 80,
@@ -325,8 +345,8 @@ async function convertAndOptimizeImage(imagePath) {
       return {
         convertedBuffer: finalBuffer,
         metadata: {
-          width: targetWidth,
-          height: targetHeight,
+          width: finalWidth,
+          height: finalHeight,
           format: 'jpeg',
           originalSize,
           optimizedFor: 'gemini',
@@ -338,8 +358,8 @@ async function convertAndOptimizeImage(imagePath) {
     return {
       convertedBuffer,
       metadata: {
-        width: targetWidth,
-        height: targetHeight,
+        width: finalWidth,
+        height: finalHeight,
         format: 'jpeg',
         originalSize,
         optimizedFor: 'gemini',

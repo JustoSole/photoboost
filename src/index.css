@@ -3,29 +3,29 @@
 :root {
   --white: #FFFFFF;
   --gray-50: #FAFAFA;
-  --gray-100: #F7F8FA;
-  --gray-200: #E5E7EB;
-  --gray-300: #D1D5DB;
-  --gray-400: #9CA3AF;
-  --gray-500: #6B7280;
-  --gray-600: #4B5563;
-  --gray-700: #374151;
-  --gray-800: #1F2937;
-  --gray-900: #111827;
-  --accent-green: #00C58E;
-  --accent-green-dark: #00B37E;
-  --accent-green-light: #E6FBF4;
-  --accent-blue: #4A90E2;
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
-  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.20);
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --gray-100: #F8F9FA;
+  --gray-200: #E9ECEF;
+  --gray-300: #DEE2E6;
+  --gray-400: #CED4DA;
+  --gray-500: #ADB5BD;
+  --gray-600: #6C757D;
+  --gray-700: #495057;
+  --gray-800: #343A40;
+  --gray-900: #212529;
+  --black-soft: #222222;
+  --accent-green: #0052CC;
+  --accent-green-dark: #003D99;
+  --accent-green-light: #E0E7FF;
+  --accent-blue: #7C3AED;
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -36,6 +36,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
 
 body {
@@ -46,6 +47,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+/* Scroll offset for fixed header */
+section[id] {
+  scroll-margin-top: 100px;
 }
 
 #root {
@@ -98,6 +104,63 @@ p {
   }
 }
 
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  h3 {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .btn {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.9rem;
+    border-radius: var(--radius-md);
+  }
+
+  .btn-large {
+    padding: 1rem 1.75rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 0 0.875rem;
+  }
+
+  h1 {
+    font-size: clamp(1.3rem, 5vw, 2rem);
+  }
+
+  h2 {
+    font-size: clamp(1.1rem, 4vw, 1.7rem);
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+  }
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -146,6 +209,13 @@ p {
   padding: 1.25rem 2.5rem;
   font-size: 1.125rem;
   border-radius: var(--radius-lg);
+}
+
+.btn-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Utilities */

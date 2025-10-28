@@ -25,7 +25,7 @@ const HowItWorks = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 })
 
   return (
-    <section className="how-it-works" ref={ref}>
+    <section className="how-it-works" id="how-it-works" ref={ref}>
       <div className="container">
         <h2 className="section-title">Cómo funciona</h2>
         
@@ -58,7 +58,7 @@ const HowItWorks = () => {
             Resultados uniformes, profesionales y con tono coherente en toda la propiedad.
           </p>
           <a href="#beta" className="btn btn-primary">
-            📸 Subir mis fotos ahora
+            Probar ahora gratis
           </a>
         </motion.div>
       </div>

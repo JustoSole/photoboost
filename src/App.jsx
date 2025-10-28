@@ -1,10 +1,10 @@
 import React from 'react'
+import Header from './components/Header'
 import Hero from './components/Hero'
 import PainSection from './components/PainSection'
 import HowItWorks from './components/HowItWorks'
-import VisualResults from './components/VisualResults'
-import CostComparison from './components/CostComparison'
-import Pricing from './components/Pricing'
+import SalesBoost from './components/SalesBoost'
+import Testimonials from './components/Testimonials'
 import BetaOffer from './components/BetaOffer'
 import Footer from './components/Footer'
 import MobileCTA from './components/MobileCTA'
@@ -13,12 +13,12 @@ import './App.css'
 function App() {
   return (
     <div className="app">
+      <Header />
       <Hero />
       <PainSection />
       <HowItWorks />
-      <VisualResults />
-      <CostComparison />
-      <Pricing />
+      <SalesBoost />
+      <Testimonials />
       <BetaOffer />
       <Footer />
       <MobileCTA />

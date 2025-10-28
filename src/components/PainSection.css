@@ -1,17 +1,26 @@
 .pain-section {
   background: var(--white);
+  padding: 6rem 0;
 }
 
-.pain-content {
-  max-width: 1100px;
-  margin: 0 auto;
+.section-title {
+  text-align: center;
+  margin-bottom: 3.5rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--black-soft);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .pain-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin: 4rem 0;
+  margin-bottom: 4rem;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .pain-card {
@@ -19,60 +28,106 @@
   padding: 2.5rem 2rem;
   background: var(--gray-50);
   border-radius: var(--radius-lg);
-  border: 2px solid var(--gray-200);
+  border: 1px solid var(--gray-200);
   transition: var(--transition);
 }
 
 .pain-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  background: var(--white);
   border-color: var(--gray-300);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }
 
 .pain-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-green);
+  width: 56px;
+  height: 56px;
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--accent-green-light);
+  border-radius: var(--radius-md);
+}
+
+.pain-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.5;
 }
 
 .pain-card h3 {
-  color: var(--gray-900);
+  color: var(--black-soft);
   margin-bottom: 0.75rem;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .pain-card p {
   color: var(--gray-600);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .solution-box {
   text-align: center;
   padding: 3rem 2.5rem;
-  background: linear-gradient(135deg, var(--accent-green-light) 0%, rgba(74, 144, 226, 0.1) 100%);
-  border-radius: var(--radius-xl);
-  border: 2px solid var(--accent-green);
+  background: var(--white);
+  border-radius: var(--radius-lg);
   max-width: 800px;
   margin: 0 auto;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
 }
 
 .solution-box h3 {
-  color: var(--accent-green);
-  margin-bottom: 1rem;
-  font-size: 2rem;
+  color: var(--black-soft);
+  margin-bottom: 1.25rem;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .solution-box p {
-  color: var(--gray-700);
+  color: var(--gray-600);
+  margin-bottom: 1.75rem;
+  font-size: 1.025rem;
+  line-height: 1.7;
+}
+
+.solution-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 2rem;
-  font-size: 1.125rem;
-  line-height: 1.8;
+}
+
+.feature {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  color: var(--gray-700);
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
+  .pain-section {
+    padding: 4rem 0;
+  }
+
+  .section-title {
+    margin-bottom: 2.5rem;
+  }
+
   .pain-cards {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    margin: 3rem 0;
+    margin-bottom: 3rem;
   }
 
   .pain-card {
@@ -80,11 +135,141 @@
   }
 
   .solution-box {
-    padding: 2rem 1.5rem;
+    padding: 2.25rem 1.5rem;
   }
 
   .solution-box h3 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .solution-box p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pain-section {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    margin-bottom: 2rem;
+  }
+
+  .pain-cards {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .pain-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: var(--radius-md);
+  }
+
+  .pain-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pain-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pain-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pain-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .solution-box {
+    padding: 2rem 1.25rem;
+    border-radius: var(--radius-md);
+  }
+
+  .solution-box h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .solution-box p {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .solution-features {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .feature {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (max-width: 360px) {
+  .pain-section {
+    padding: 2.5rem 0;
+  }
+
+  .section-title {
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    margin-bottom: 1.75rem;
+  }
+
+  .pain-cards {
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .pain-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .pain-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.75rem;
+  }
+
+  .pain-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .pain-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .pain-card p {
+    font-size: 0.85rem;
+  }
+
+  .solution-box {
+    padding: 1.75rem 1rem;
+  }
+
+  .solution-box h3 {
+    font-size: 1.15rem;
+  }
+
+  .solution-box p {
+    font-size: 0.85rem;
+  }
+
+  .feature {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
   }
 }
 

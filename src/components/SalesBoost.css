@@ -1,0 +1,266 @@
+.sales-boost {
+  background: var(--white);
+  padding: 6rem 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--black-soft);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+}
+
+.section-subtitle {
+  color: var(--gray-600);
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.benefit-card {
+  position: relative;
+  background: linear-gradient(135deg, var(--accent-green-light) 0%, rgba(0, 82, 204, 0.08) 100%);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.benefit-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-green);
+}
+
+.benefit-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  background: var(--accent-green);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  position: relative;
+}
+
+.benefit-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke-width: 2px;
+}
+
+.trend-icon {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  color: var(--accent-green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.benefit-card h3 {
+  color: var(--black-soft);
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.benefit-card p {
+  color: var(--gray-600);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.portals-section {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.portals-header h3 {
+  color: var(--black-soft);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.portals-header p {
+  color: var(--gray-600);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.portals-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.portal-badge {
+  padding: 0.75rem 1.5rem;
+  background: var(--white);
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-full);
+  color: var(--gray-700);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.portal-badge:hover {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.why-it-works {
+  background: var(--gray-50);
+  padding: 3rem 2.5rem;
+  border-radius: var(--radius-xl);
+  max-width: 900px;
+  margin: 0 auto;
+  border: 2px solid var(--gray-200);
+}
+
+.why-it-works h3 {
+  color: var(--black-soft);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.reasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.reason-item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.reason-number {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: var(--accent-green);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.reason-content h4 {
+  color: var(--black-soft);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.reason-content p {
+  color: var(--gray-600);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .sales-boost {
+    padding: 4rem 0;
+  }
+
+  .section-header {
+    margin-bottom: 3rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .benefit-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .portal-badge {
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .why-it-works {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .why-it-works h3 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .reason-item {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .reason-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.125rem;
+  }
+
+  .reason-content h4 {
+    font-size: 1.125rem;
+  }
+
+  .reason-content p {
+    font-size: 0.95rem;
+  }
+}
+

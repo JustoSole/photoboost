@@ -23,7 +23,7 @@ const comparisons = [
   {
     service: 'PhotoBoost (IA)',
     time: '⚡ Segundos',
-    cost: 'USD 5',
+    cost: 'Consultar',
     delivery: 'Automática',
     highlight: true,
     pros: ['Instantáneo', 'Resultados uniformes', 'Sin coordinación']

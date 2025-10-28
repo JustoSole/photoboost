@@ -76,7 +76,7 @@ git init
 git add .
 git commit -m "PhotoBoost landing page"
 git branch -M main
-git remote add origin https://github.com/TU-USUARIO/photoboost.git
+git remote add origin https://github.com/JustoSole/photoboost.git
 git push -u origin main
 ```
 

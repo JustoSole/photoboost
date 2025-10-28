@@ -1,0 +1,158 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1rem 0;
+}
+
+.header.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 0;
+}
+
+.header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 2rem;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--black-soft);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.header-logo .logo-svg {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
+  letter-spacing: -0.5px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  color: var(--black-soft);
+}
+
+.header .btn {
+  flex-shrink: 0;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 1024px) {
+  .header-nav {
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    gap: 1rem;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .nav-link {
+    display: none;
+  }
+
+  .header-logo {
+    font-size: 1rem;
+  }
+
+  .logo-icon {
+    font-size: 1.25rem;
+  }
+
+  .header .btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.75rem 0;
+  }
+
+  .header.scrolled {
+    padding: 0.5rem 0;
+  }
+
+  .header-logo .logo-svg {
+    height: 32px;
+  }
+
+  .header .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .header-content {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .header-logo .logo-svg {
+    height: 28px;
+  }
+
+  .header .btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+  }
+}

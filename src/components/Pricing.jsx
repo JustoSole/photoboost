@@ -6,7 +6,6 @@ import './Pricing.css'
 const plans = [
   {
     name: 'Starter',
-    icon: '🟩',
     price: 5,
     period: 'una vez',
     features: [
@@ -21,7 +20,6 @@ const plans = [
   },
   {
     name: 'Pro',
-    icon: '🟦',
     price: 20,
     period: 'mes',
     features: [
@@ -38,7 +36,6 @@ const plans = [
   },
   {
     name: 'Agencia',
-    icon: '🟥',
     price: 60,
     period: 'mes',
     features: [
@@ -61,18 +58,31 @@ const Pricing = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 })
 
   return (
-    <section className="pricing" ref={ref}>
+    <section className="pricing" id="pricing" ref={ref}>
       <div className="container">
-        <h2 className="section-title">Planes simples</h2>
-        <p className="section-subtitle">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="section-title"
+        >
+          Planes simples
+        </motion.h2>
+        
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="section-subtitle"
+        >
           Elegí el plan que mejor se adapte a tus necesidades. Sin permanencias ni costos ocultos.
-        </p>
+        </motion.p>
 
         <div className="pricing-grid">
           {plans.map((plan, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`pricing-card ${plan.highlight ? 'featured' : ''}`}
@@ -80,21 +90,20 @@ const Pricing = () => {
               {plan.highlight && <div className="popular-badge">Más popular</div>}
               
               <div className="pricing-header">
-                <span className="plan-icon">{plan.icon}</span>
                 <h3>{plan.name}</h3>
               </div>
 
               <div className="pricing-price">
                 <span className="currency">USD</span>
                 <span className="amount">{plan.price}</span>
-                {plan.period && <span className="period">/{plan.period}</span>}
+                <span className="period">/{plan.period}</span>
               </div>
 
               <ul className="pricing-features">
                 {plan.features.map((feature, i) => (
                   <li key={i}>
                     <FiCheck className="check-icon" />
-                    {feature}
+                    <span>{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -116,11 +125,8 @@ const Pricing = () => {
           className="pricing-footer"
         >
           <p className="footer-note">
-            💳 Pagá solo por lo que usás. Cancelá cuando quieras.
+            Pagá solo por lo que usás. Cancelá cuando quieras.
           </p>
-          <a href="#beta" className="btn btn-primary">
-            🚀 Probar PhotoBoost gratis
-          </a>
         </motion.div>
       </div>
     </section>

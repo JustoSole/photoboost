@@ -1,92 +1,177 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import './Hero.css'
 
+const examples = [
+  {
+    id: 1,
+    before: '/demo-properties/before/PHOTO1_CONLOGO.webp',
+    after: '/demo-properties/after/PHOTO1_CONLOGO.webp',
+    title: 'Sala de estar con logo'
+  },
+  {
+    id: 2,
+    before: '/demo-properties/before/PHOTO2.webp',
+    after: '/demo-properties/after/PHOTO2.webp',
+    title: 'Dormitorio principal'
+  },
+  {
+    id: 3,
+    before: '/demo-properties/before/PHOTO3_PIXELADA.webp',
+    after: '/demo-properties/after/PHOTO3_PIXELADA.webp',
+    title: 'Cocina moderna'
+  },
+  {
+    id: 4,
+    before: '/demo-properties/before/PHOTO4_OSCURA.webp',
+    after: '/demo-properties/after/PHOTO4_OSCURA.webp',
+    title: 'Sala de estar amplia'
+  },
+  {
+    id: 5,
+    before: '/demo-properties/before/PHOTO5_CIELOGRIS_SATURADA.jpg',
+    after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg',
+    title: 'Patio exterior'
+  }
+]
+
 const Hero = () => {
+  const [currentIndex, setCurrentIndex] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
 
-  const handleSliderChange = (e) => {
-    setSliderPosition(e.target.value)
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const percentage = (x / rect.width) * 100
+    setSliderPosition(Math.max(0, Math.min(100, percentage)))
   }
+
+  const handleMouseLeave = () => {
+    setSliderPosition(50)
+  }
+
+  const nextExample = () => {
+    setCurrentIndex((prev) => (prev + 1) % examples.length)
+    setSliderPosition(50)
+  }
+
+  const prevExample = () => {
+    setCurrentIndex((prev) => (prev - 1 + examples.length) % examples.length)
+    setSliderPosition(50)
+  }
+
+  const currentExample = examples[currentIndex]
 
   return (
     <section className="hero">
       <div className="container">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.4 }}
           className="hero-content"
         >
           <h1 className="hero-title">
-            Fotos profesionales,<br />
-            <span className="text-gradient">sin fotógrafos.</span>
+            Estamos seleccionando las próximas 10 agencias para nuestra beta privada.
           </h1>
           <p className="hero-subtitle">
-            Mejorá tus imágenes inmobiliarias con IA en segundos.<br />
-            Sin estudio, sin edición manual, sin esperas.
+            PhotoBoost mejora tus fotos inmobiliarias con IA. Obtené imágenes profesionales sin fotógrafos ni esperas. Probá gratis 10 fotos y formá parte del lanzamiento.
           </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="comparison-slider-wrapper"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="hero-comparison"
         >
-          <div className="comparison-slider">
-            <div className="comparison-container">
+          <div className="comparison-carousel">
+            <button 
+              className="carousel-btn carousel-btn-prev"
+              onClick={prevExample}
+              aria-label="Anterior"
+            >
+              <FiChevronLeft />
+            </button>
+
+            <div 
+              className="comparison-slider"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
               <div className="image-before">
-                <img 
-                  src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=60&auto=format" 
-                  alt="Foto sin procesar"
-                />
                 <div className="image-label label-before">Antes</div>
-              </div>
-              <div 
-                className="image-after"
-                style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
-              >
                 <img 
-                  src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=100&sat=10&auto=format&sharp=10" 
-                  alt="Foto mejorada con IA"
+                  src={currentExample.before} 
+                  alt={`${currentExample.title} - Antes`}
+                  loading="eager"
                 />
-                <div className="image-label label-after">Después</div>
               </div>
-              <div 
-                className="slider-line"
-                style={{ left: `${sliderPosition}%` }}
-              >
+
+              <div className="image-after" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
+                <div className="image-label label-after">Después</div>
+                <img 
+                  src={currentExample.after} 
+                  alt={`${currentExample.title} - Después`}
+                />
+              </div>
+
+              <div className="slider-line" style={{ left: `${sliderPosition}%` }}>
                 <div className="slider-button">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-                    <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-                  </svg>
+                  <div className="slider-arrows">
+                    <span>‹</span>
+                    <span>›</span>
+                  </div>
                 </div>
               </div>
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
+
+              <input
+                type="range"
+                min="0"
+                max="100"
                 value={sliderPosition}
-                onChange={handleSliderChange}
+                onChange={(e) => setSliderPosition(e.target.value)}
                 className="slider-input"
-                aria-label="Deslizar para comparar antes y después"
               />
             </div>
+
+            <button 
+              className="carousel-btn carousel-btn-next"
+              onClick={nextExample}
+              aria-label="Siguiente"
+            >
+              <FiChevronRight />
+            </button>
           </div>
+
+          <div className="carousel-dots">
+            {examples.map((_, index) => (
+              <button
+                key={index}
+                className={`dot ${index === currentIndex ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentIndex(index)
+                  setSliderPosition(50)
+                }}
+                aria-label={`Ver ejemplo ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          <p className="carousel-title">{currentExample.title}</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
           className="hero-cta"
         >
           <a href="#beta" className="btn btn-primary btn-large">
-            🚀 Probar ahora gratis
+            Aplicar a la beta gratuita →
           </a>
-          <p className="cta-subtext">10 fotos gratis • Sin tarjeta de crédito</p>
+          <p className="cta-subtext">Sin tarjeta. Sin compromiso. Cupos limitados.</p>
         </motion.div>
       </div>
     </section>
