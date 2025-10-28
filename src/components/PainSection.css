@@ -1,0 +1,90 @@
+.pain-section {
+  background: var(--white);
+}
+
+.pain-content {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pain-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 4rem 0;
+}
+
+.pain-card {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.pain-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-300);
+}
+
+.pain-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.pain-card h3 {
+  color: var(--gray-900);
+  margin-bottom: 0.75rem;
+  font-size: 1.75rem;
+}
+
+.pain-card p {
+  color: var(--gray-600);
+  font-size: 1rem;
+}
+
+.solution-box {
+  text-align: center;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(135deg, var(--accent-green-light) 0%, rgba(74, 144, 226, 0.1) 100%);
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--accent-green);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.solution-box h3 {
+  color: var(--accent-green);
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.solution-box p {
+  color: var(--gray-700);
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .pain-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 3rem 0;
+  }
+
+  .pain-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .solution-box {
+    padding: 2rem 1.5rem;
+  }
+
+  .solution-box h3 {
+    font-size: 1.5rem;
+  }
+}
+

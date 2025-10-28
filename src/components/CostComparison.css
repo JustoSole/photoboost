@@ -1,0 +1,149 @@
+.cost-comparison {
+  background: var(--gray-50);
+}
+
+.comparison-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.comparison-card {
+  background: var(--white);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--gray-200);
+  transition: var(--transition);
+  position: relative;
+}
+
+.comparison-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.comparison-card.highlight {
+  border-color: var(--accent-green);
+  background: linear-gradient(135deg, var(--white) 0%, var(--accent-green-light) 100%);
+  box-shadow: var(--shadow-lg);
+}
+
+.comparison-card.highlight:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+.badge {
+  position: absolute;
+  top: -1rem;
+  right: 1.5rem;
+  background: var(--accent-green);
+  color: var(--white);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
+}
+
+.comparison-card h3 {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  color: var(--gray-900);
+}
+
+.comparison-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.price-highlight {
+  color: var(--accent-green);
+  font-size: 1.5rem;
+}
+
+.features-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.features-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.features-list .icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.features-list.pros li {
+  color: var(--gray-700);
+}
+
+.features-list.cons li {
+  color: var(--gray-500);
+}
+
+.icon.success {
+  color: var(--accent-green);
+}
+
+.icon.error {
+  color: var(--gray-400);
+}
+
+.comparison-footer {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.footer-text {
+  font-size: 1.25rem;
+  color: var(--gray-700);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .comparison-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .comparison-card {
+    padding: 2rem 1.5rem;
+  }
+}
+

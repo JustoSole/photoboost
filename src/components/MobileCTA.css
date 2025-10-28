@@ -1,0 +1,28 @@
+.mobile-cta {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: var(--white);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-cta.hidden {
+  transform: translateY(100%);
+}
+
+.mobile-cta.visible {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .mobile-cta {
+    display: block;
+  }
+}
+
