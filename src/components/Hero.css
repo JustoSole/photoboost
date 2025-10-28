@@ -39,6 +39,7 @@
   position: relative;
   max-width: 1000px;
   margin: 0 auto;
+  padding: 0 70px;
 }
 
 .carousel-btn {
@@ -67,11 +68,11 @@
 }
 
 .carousel-btn-prev {
-  left: 1rem;
+  left: 0;
 }
 
 .carousel-btn-next {
-  right: 1rem;
+  right: 0;
 }
 
 .comparison-slider {
@@ -215,14 +216,6 @@
   border-radius: 5px;
 }
 
-.carousel-title {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: var(--gray-600);
-  font-weight: 500;
-}
-
 .hero-cta {
   text-align: center;
   position: relative;
@@ -268,25 +261,25 @@
     height: 48px;
   }
 
+  .comparison-carousel {
+    padding: 0 60px;
+  }
+
   .carousel-btn {
     width: 40px;
     height: 40px;
   }
 
   .carousel-btn-prev {
-    left: 0.5rem;
+    left: 0;
   }
 
   .carousel-btn-next {
-    right: 0.5rem;
+    right: 0;
   }
 
   .carousel-dots {
     margin-top: 1.5rem;
-  }
-
-  .carousel-title {
-    font-size: 0.875rem;
   }
 }
 
@@ -341,6 +334,10 @@
     gap: 1px;
   }
 
+  .comparison-carousel {
+    padding: 0 50px;
+  }
+
   .carousel-btn {
     width: 36px;
     height: 36px;
@@ -348,11 +345,11 @@
   }
 
   .carousel-btn-prev {
-    left: 0.35rem;
+    left: 0;
   }
 
   .carousel-btn-next {
-    right: 0.35rem;
+    right: 0;
   }
 
   .carousel-dots {
@@ -367,11 +364,6 @@
 
   .dot.active {
     width: 20px;
-  }
-
-  .carousel-title {
-    font-size: 0.8rem;
-    margin-top: 0.75rem;
   }
 
   .hero-comparison {
@@ -420,10 +412,6 @@
   .btn-large {
     padding: 0.9rem 1.5rem;
     font-size: 0.95rem;
-  }
-
-  .carousel-title {
-    font-size: 0.75rem;
   }
 }
 

@@ -30,9 +30,10 @@ const Header = () => {
           </div>
 
           <nav className="header-nav">
+            <a href="#beneficios" className="nav-link">Beneficios</a>
             <a href="#how-it-works" className="nav-link">Cómo funciona</a>
-            <a href="#examples" className="nav-link">Ejemplos</a>
-            <a href="#beta" className="nav-link">Beta exclusiva</a>
+            <a href="#testimonios" className="nav-link">Testimonios</a>
+            <a href="#beta" className="nav-link">Beta</a>
           </nav>
 
           <a href="#beta" className="btn btn-primary">

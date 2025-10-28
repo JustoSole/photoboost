@@ -25,15 +25,16 @@ const portals = [
   'Zonaprop',
   'Argenprop',
   'MercadoLibre',
-  'Idealista',
-  'Avisos Clasificados'
+  'Properati',
+  'Página Web',
+  'Redes Sociales'
 ]
 
 const SalesBoost = () => {
   const [ref, isInView] = useInView({ threshold: 0.2 })
 
   return (
-    <section className="sales-boost" ref={ref}>
+    <section className="sales-boost" id="beneficios" ref={ref}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

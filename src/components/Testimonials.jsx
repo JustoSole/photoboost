@@ -26,7 +26,7 @@ const Testimonials = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 })
 
   return (
-    <section className="testimonials" ref={ref}>
+    <section className="testimonials" id="testimonios" ref={ref}>
       <div className="container">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

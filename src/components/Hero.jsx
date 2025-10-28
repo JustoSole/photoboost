@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { trackCTAClick, trackComparisonInteraction } from '../utils/analytics'
@@ -7,62 +7,77 @@ import './Hero.css'
 const examples = [
   {
     id: 1,
-    before: '/demo-properties/before/PHOTO1_CONLOGO.webp',
-    after: '/demo-properties/after/PHOTO1_CONLOGO.webp',
-    title: 'Sala de estar con logo'
+    before: '/demo-properties/before/casa_cielo_gris_mala_calidad.webp',
+    after: '/demo-properties/after/casa_cielo_gris_mala_calidad.webp',
+    title: 'Casa con cielo gris mejorado'
   },
   {
     id: 2,
-    before: '/demo-properties/before/PHOTO2.webp',
-    after: '/demo-properties/after/PHOTO2.webp',
-    title: 'Dormitorio principal'
+    before: '/demo-properties/before/depto_oscuro_1.webp',
+    after: '/demo-properties/after/depto_oscuro_1.webp',
+    title: 'Departamento oscuro iluminado'
   },
   {
     id: 3,
-    before: '/demo-properties/before/PHOTO3_PIXELADA.webp',
-    after: '/demo-properties/after/PHOTO3_PIXELADA.webp',
-    title: 'Cocina moderna'
+    before: '/demo-properties/before/depto_anocheciendo.webp',
+    after: '/demo-properties/after/depto_anocheciendo.webp',
+    title: 'Departamento al anochecer'
   },
   {
     id: 4,
-    before: '/demo-properties/before/PHOTO4_OSCURA.webp',
-    after: '/demo-properties/after/PHOTO4_OSCURA.webp',
-    title: 'Sala de estar amplia'
+    before: '/demo-properties/before/depto_gris_angulo_malo.webp',
+    after: '/demo-properties/after/depto_gris_angulo_malo.webp',
+    title: 'Ángulo y luz mejorados'
   },
   {
     id: 5,
     before: '/demo-properties/before/PHOTO5_CIELOGRIS_SATURADA.jpg',
     after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg',
-    title: 'Patio exterior'
+    title: 'Cielo gris saturado corregido'
+  },
+  {
+    id: 6,
+    before: '/demo-properties/before/casa_mala_img.webp',
+    after: '/demo-properties/after/casa_mala_img.webp',
+    title: 'Casa con calidad mejorada'
   }
 ]
 
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
+  const [isDragging, setIsDragging] = useState(false)
+  const positionsRef = useRef({})
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
     const percentage = (x / rect.width) * 100
-    setSliderPosition(Math.max(0, Math.min(100, percentage)))
+    const newPosition = Math.max(0, Math.min(100, percentage))
+    setSliderPosition(newPosition)
+    setIsDragging(true)
+    // Guardar la posición de esta imagen
+    positionsRef.current[currentIndex] = newPosition
   }
 
   const handleMouseLeave = () => {
-    setSliderPosition(50)
+    setIsDragging(false)
+    // NO resetear - mantener la posición donde quedó
   }
 
   const nextExample = () => {
     const newIndex = (currentIndex + 1) % examples.length
     setCurrentIndex(newIndex)
-    setSliderPosition(50)
+    // Cargar la posición guardada de la nueva imagen
+    setSliderPosition(positionsRef.current[newIndex] || 50)
     trackComparisonInteraction(newIndex + 1)
   }
 
   const prevExample = () => {
     const newIndex = (currentIndex - 1 + examples.length) % examples.length
     setCurrentIndex(newIndex)
-    setSliderPosition(50)
+    // Cargar la posición guardada de la nueva imagen
+    setSliderPosition(positionsRef.current[newIndex] || 50)
     trackComparisonInteraction(newIndex + 1)
   }
 
@@ -82,10 +97,10 @@ const Hero = () => {
           className="hero-content"
         >
           <h1 className="hero-title">
-            Estamos seleccionando las próximas 10 agencias para nuestra beta privada.
+            Fotos profesionales sin fotógrafos ni esperas
           </h1>
           <p className="hero-subtitle">
-            PhotoBoost mejora tus fotos inmobiliarias con IA. Obtené imágenes profesionales sin fotógrafos ni esperas. Probá gratis 10 fotos y formá parte del lanzamiento.
+            PhotoBoost mejora tus imágenes inmobiliarias con IA en minutos. No más fotos oscuras, pixeladas o de mala calidad. Probá gratis 10 fotos durante la beta.
           </p>
         </motion.div>
 
@@ -161,14 +176,12 @@ const Hero = () => {
                 className={`dot ${index === currentIndex ? 'active' : ''}`}
                 onClick={() => {
                   setCurrentIndex(index)
-                  setSliderPosition(50)
+                  setSliderPosition(positionsRef.current[index] || 50)
                 }}
                 aria-label={`Ver ejemplo ${index + 1}`}
               />
             ))}
           </div>
-
-          <p className="carousel-title">{currentExample.title}</p>
         </motion.div>
 
         <motion.div
