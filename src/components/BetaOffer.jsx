@@ -18,7 +18,7 @@ const BetaOffer = () => {
     monthlyPhotos: '',
     currentProcess: '',
     mainChallenge: '',
-    budget: ''
+    pricePerPhoto: ''
   })
 
   const handleInputChange = (e) => {
@@ -40,7 +40,7 @@ const BetaOffer = () => {
       formDataToSend.append('monthlyPhotos', formData.monthlyPhotos)
       formDataToSend.append('currentProcess', formData.currentProcess)
       formDataToSend.append('mainChallenge', formData.mainChallenge)
-      formDataToSend.append('budget', formData.budget)
+      formDataToSend.append('pricePerPhoto', formData.pricePerPhoto)
       formDataToSend.append('timestamp', new Date().toISOString())
 
       const response = await fetch('https://api.web3forms.com/submit', {
@@ -85,7 +85,7 @@ const BetaOffer = () => {
           monthlyPhotos: '',
           currentProcess: '',
           mainChallenge: '',
-          budget: ''
+          pricePerPhoto: ''
         })
         setSubmitStatus(null)
         setShowThankYouModal(false)
@@ -252,17 +252,27 @@ const BetaOffer = () => {
                 </select>
               </div>
 
-              {/* Row 8: Budget */}
+              {/* Row 8: Price Per Photo */}
               <div className="form-group">
-                <label htmlFor="budget">¿Cuál es tu presupuesto mensual para fotografía?</label>
-                <input
-                  type="text"
-                  id="budget"
-                  name="budget"
-                  value={formData.budget}
+                <label htmlFor="pricePerPhoto">¿Cuánto estás dispuesto a pagar por foto mejorada con IA? (1-10)</label>
+                <select
+                  id="pricePerPhoto"
+                  name="pricePerPhoto"
+                  value={formData.pricePerPhoto}
                   onChange={handleInputChange}
-                  placeholder="Ej: 500 USD"
-                />
+                >
+                  <option value="">Selecciona una opción...</option>
+                  <option value="1">1 - USD 0.50 por foto</option>
+                  <option value="2">2 - USD 1.00 por foto</option>
+                  <option value="3">3 - USD 1.50 por foto</option>
+                  <option value="4">4 - USD 2.00 por foto</option>
+                  <option value="5">5 - USD 2.50 por foto</option>
+                  <option value="6">6 - USD 3.00 por foto</option>
+                  <option value="7">7 - USD 4.00 por foto</option>
+                  <option value="8">8 - USD 5.00 por foto</option>
+                  <option value="9">9 - USD 7.50 por foto</option>
+                  <option value="10">10 - USD 10.00+ por foto</option>
+                </select>
               </div>
 
               <button 
