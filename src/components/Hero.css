@@ -35,6 +35,14 @@
   margin: 0 auto 4rem;
 }
 
+.comparison-hint {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
 .comparison-carousel {
   position: relative;
   max-width: 1000px;
@@ -104,27 +112,6 @@
   -webkit-user-drag: none;
 }
 
-.image-label {
-  position: absolute;
-  top: 1.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px);
-  color: var(--white);
-  font-weight: 600;
-  font-size: 0.875rem;
-  border-radius: var(--radius-sm);
-  z-index: 2;
-  letter-spacing: 0.5px;
-}
-
-.label-before {
-  left: 1.5rem;
-}
-
-.label-after {
-  right: 1.5rem;
-}
 
 .slider-line {
   position: absolute;
@@ -242,20 +229,6 @@
     aspect-ratio: 4 / 3;
   }
 
-  .image-label {
-    top: 1rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
-  }
-
-  .label-before {
-    left: 1rem;
-  }
-
-  .label-after {
-    right: 1rem;
-  }
-
   .slider-button {
     width: 48px;
     height: 48px;
@@ -307,21 +280,6 @@
   .comparison-slider {
     aspect-ratio: 3 / 2;
     border-radius: var(--radius-lg);
-  }
-
-  .image-label {
-    top: 0.75rem;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
-    border-radius: var(--radius-sm);
-  }
-
-  .label-before {
-    left: 0.75rem;
-  }
-
-  .label-after {
-    right: 0.75rem;
   }
 
   .slider-button {

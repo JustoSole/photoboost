@@ -13,9 +13,9 @@ const examples = [
   },
   {
     id: 2,
-    before: '/demo-properties/before/depto_oscuro_1.webp',
-    after: '/demo-properties/after/depto_oscuro_1.webp',
-    title: 'Departamento oscuro iluminado'
+    before: '/demo-properties/before/AIEnhancement_depto.webp',
+    after: '/demo-properties/after/AIEnhancement_depto.webp',
+    title: 'Departamento moderno'
   },
   {
     id: 3,
@@ -110,6 +110,7 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="hero-comparison"
         >
+          <p className="comparison-hint">Desliza para ver la IA en acción</p>
           <div className="comparison-carousel">
             <button 
               className="carousel-btn carousel-btn-prev"
@@ -125,7 +126,6 @@ const Hero = () => {
               onMouseLeave={handleMouseLeave}
             >
               <div className="image-before">
-                <div className="image-label label-before">Antes</div>
                 <img 
                   src={currentExample.before} 
                   alt={`${currentExample.title} - Antes`}
@@ -134,7 +134,6 @@ const Hero = () => {
               </div>
 
               <div className="image-after" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
-                <div className="image-label label-after">Después</div>
                 <img 
                   src={currentExample.after} 
                   alt={`${currentExample.title} - Después`}

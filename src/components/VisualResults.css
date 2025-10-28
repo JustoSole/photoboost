@@ -102,28 +102,6 @@
   z-index: 1;
 }
 
-/* Labels */
-.label {
-  position: absolute;
-  top: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.75);
-  color: var(--white);
-  font-weight: 600;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  z-index: 10;
-  backdrop-filter: blur(4px);
-}
-
-.before-image .label {
-  left: 1rem;
-}
-
-.after-label {
-  right: 1rem;
-  z-index: 3;
-}
 
 /* Slider Handle */
 .slider-handle {
@@ -159,6 +137,7 @@
   gap: 4px;
   transition: all 0.3s ease;
   border: 3px solid var(--accent-green);
+  position: relative;
 }
 
 .slider-button:hover {
@@ -266,20 +245,6 @@
     height: 18px;
   }
 
-  .label {
-    top: 0.75rem;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
-  }
-
-  .before-image .label {
-    left: 0.75rem;
-  }
-
-  .after-label {
-    right: 0.75rem;
-  }
-
   .slider-button {
     width: 40px;
     height: 40px;
@@ -337,20 +302,6 @@
   .nav-btn svg {
     width: 16px;
     height: 16px;
-  }
-
-  .label {
-    top: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.65rem;
-  }
-
-  .before-image .label {
-    left: 0.5rem;
-  }
-
-  .after-label {
-    right: 0.5rem;
   }
 
   .slider-button {
@@ -420,20 +371,6 @@
 
   .dot.active {
     width: 14px;
-  }
-
-  .label {
-    top: 0.4rem;
-    padding: 0.2rem 0.4rem;
-    font-size: 0.6rem;
-  }
-
-  .before-image .label {
-    left: 0.4rem;
-  }
-
-  .after-label {
-    right: 0.4rem;
   }
 
   .btn {

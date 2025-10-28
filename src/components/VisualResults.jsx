@@ -12,9 +12,9 @@ const imagePairs = [
   },
   {
     id: 2,
-    title: 'Departamento oscuro iluminado',
-    before: '/demo-properties/before/depto_oscuro_1.webp',
-    after: '/demo-properties/after/depto_oscuro_1.webp'
+    title: 'Departamento moderno',
+    before: '/demo-properties/before/AIEnhancement_depto.webp',
+    after: '/demo-properties/after/AIEnhancement_depto.webp'
   },
   {
     id: 3,
@@ -127,7 +127,7 @@ const VisualResults = () => {
         >
           <h2 className="section-title">Así se ve la diferencia con PhotoBoost</h2>
           <p className="section-subtitle">
-            Mejoras reales en iluminación, nitidez y color. Sin perder la naturalidad de las fotos.
+            Desliza para ver la IA en acción
           </p>
         </motion.div>
 
@@ -167,7 +167,6 @@ const VisualResults = () => {
                 style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
               >
                 <img src={current.before} alt="Antes de PhotoBoost" draggable="false" />
-                <span className="label">Antes</span>
               </div>
 
               {/* Slider Handle */}
@@ -189,9 +188,6 @@ const VisualResults = () => {
                 </div>
                 <div className="slider-line"></div>
               </div>
-
-              {/* Etiqueta "Después" */}
-              <span className="label after-label">Después</span>
             </div>
           </div>
 
