@@ -24,18 +24,12 @@ const imagePairs = [
   },
   {
     id: 4,
-    title: 'Ángulo y luz mejorados',
-    before: '/demo-properties/before/depto_gris_angulo_malo.webp',
-    after: '/demo-properties/after/depto_gris_angulo_malo.webp'
-  },
-  {
-    id: 5,
     title: 'Cielo gris saturado corregido',
     before: '/demo-properties/before/PHOTO5_CIELOGRIS_SATURADA.jpg',
     after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg'
   },
   {
-    id: 6,
+    id: 5,
     title: 'Casa con calidad mejorada',
     before: '/demo-properties/before/casa_mala_img.webp',
     after: '/demo-properties/after/casa_mala_img.webp'

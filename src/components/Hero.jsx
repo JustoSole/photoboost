@@ -25,18 +25,12 @@ const examples = [
   },
   {
     id: 4,
-    before: '/demo-properties/before/depto_gris_angulo_malo.webp',
-    after: '/demo-properties/after/depto_gris_angulo_malo.webp',
-    title: 'Ángulo y luz mejorados'
-  },
-  {
-    id: 5,
     before: '/demo-properties/before/PHOTO5_CIELOGRIS_SATURADA.jpg',
     after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg',
     title: 'Cielo gris saturado corregido'
   },
   {
-    id: 6,
+    id: 5,
     before: '/demo-properties/before/casa_mala_img.webp',
     after: '/demo-properties/after/casa_mala_img.webp',
     title: 'Casa con calidad mejorada'
