@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { trackCTAClick, trackComparisonInteraction } from '../utils/analytics'
@@ -47,7 +47,25 @@ const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const positionsRef = useRef({})
+
+  // Precargar imágenes adyacentes
+  useEffect(() => {
+    const preloadImage = (src) => {
+      const img = new Image()
+      img.src = src
+    }
+
+    // Precargar siguiente y anterior
+    const nextIndex = (currentIndex + 1) % examples.length
+    const prevIndex = (currentIndex - 1 + examples.length) % examples.length
+
+    preloadImage(examples[nextIndex].before)
+    preloadImage(examples[nextIndex].after)
+    preloadImage(examples[prevIndex].before)
+    preloadImage(examples[prevIndex].after)
+  }, [currentIndex])
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -66,19 +84,25 @@ const Hero = () => {
   }
 
   const nextExample = () => {
-    const newIndex = (currentIndex + 1) % examples.length
-    setCurrentIndex(newIndex)
-    // Cargar la posición guardada de la nueva imagen
-    setSliderPosition(positionsRef.current[newIndex] || 50)
-    trackComparisonInteraction(newIndex + 1)
+    setIsLoading(true)
+    setTimeout(() => {
+      const newIndex = (currentIndex + 1) % examples.length
+      setCurrentIndex(newIndex)
+      setSliderPosition(positionsRef.current[newIndex] || 50)
+      setIsLoading(false)
+      trackComparisonInteraction(newIndex + 1)
+    }, 150)
   }
 
   const prevExample = () => {
-    const newIndex = (currentIndex - 1 + examples.length) % examples.length
-    setCurrentIndex(newIndex)
-    // Cargar la posición guardada de la nueva imagen
-    setSliderPosition(positionsRef.current[newIndex] || 50)
-    trackComparisonInteraction(newIndex + 1)
+    setIsLoading(true)
+    setTimeout(() => {
+      const newIndex = (currentIndex - 1 + examples.length) % examples.length
+      setCurrentIndex(newIndex)
+      setSliderPosition(positionsRef.current[newIndex] || 50)
+      setIsLoading(false)
+      trackComparisonInteraction(newIndex + 1)
+    }, 150)
   }
 
   const handleCTAClick = () => {
@@ -121,12 +145,13 @@ const Hero = () => {
             </button>
 
             <div 
-              className="comparison-slider"
+              className={`comparison-slider ${isLoading ? 'loading' : ''}`}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
               <div className="image-before">
                 <img 
+                  key={`before-${currentExample.id}`}
                   src={currentExample.before} 
                   alt={`${currentExample.title} - Antes`}
                   loading="eager"
@@ -135,8 +160,10 @@ const Hero = () => {
 
               <div className="image-after" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
                 <img 
+                  key={`after-${currentExample.id}`}
                   src={currentExample.after} 
                   alt={`${currentExample.title} - Después`}
+                  loading="eager"
                 />
               </div>
 

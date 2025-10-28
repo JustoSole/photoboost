@@ -91,6 +91,12 @@
   overflow: hidden;
   box-shadow: var(--shadow-xl);
   cursor: ew-resize;
+  transition: opacity 0.3s ease;
+}
+
+.comparison-slider.loading {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .image-before,
@@ -110,6 +116,7 @@
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+  transition: opacity 0.2s ease;
 }
 
 

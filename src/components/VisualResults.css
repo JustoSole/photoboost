@@ -73,6 +73,12 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   cursor: ew-resize;
   user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+.comparison-slider.loading {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .comparison-image {
@@ -90,6 +96,7 @@
   display: block;
   pointer-events: none;
   user-select: none;
+  transition: opacity 0.2s ease;
 }
 
 /* Before Image (with clip-path) */

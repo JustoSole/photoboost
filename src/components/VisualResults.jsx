@@ -47,8 +47,26 @@ const VisualResults = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const containerRef = useRef(null)
   const positionsRef = useRef({})
+
+  // Precargar imágenes adyacentes
+  useEffect(() => {
+    const preloadImage = (src) => {
+      const img = new Image()
+      img.src = src
+    }
+
+    // Precargar siguiente y anterior
+    const nextIndex = (currentIndex + 1) % imagePairs.length
+    const prevIndex = (currentIndex - 1 + imagePairs.length) % imagePairs.length
+
+    preloadImage(imagePairs[nextIndex].before)
+    preloadImage(imagePairs[nextIndex].after)
+    preloadImage(imagePairs[prevIndex].before)
+    preloadImage(imagePairs[prevIndex].after)
+  }, [currentIndex])
 
   // Auto-change pairs every 5 seconds
   useEffect(() => {
@@ -112,9 +130,14 @@ const VisualResults = () => {
   }, [isDragging, currentIndex])
 
   const changeImage = (newIndex) => {
-    setCurrentIndex(newIndex)
-    // Cargar la posición guardada de la nueva imagen
-    setSliderPosition(positionsRef.current[newIndex] || 50)
+    setIsLoading(true)
+    
+    // Pequeño delay para transición suave
+    setTimeout(() => {
+      setCurrentIndex(newIndex)
+      setSliderPosition(positionsRef.current[newIndex] || 50)
+      setIsLoading(false)
+    }, 150)
   }
 
   return (
@@ -151,14 +174,20 @@ const VisualResults = () => {
           {/* Interactive Comparison Slider */}
           <div className="comparison-container">
             <div 
-              className="comparison-slider"
+              className={`comparison-slider ${isLoading ? 'loading' : ''}`}
               ref={containerRef}
               onMouseMove={handleMouseMove}
               onTouchMove={handleTouchMove}
             >
               {/* Imagen DESPUÉS (fondo) */}
               <div className="comparison-image after-image">
-                <img src={current.after} alt="Después de PhotoBoost" draggable="false" />
+                <img 
+                  key={`after-${current.id}`}
+                  src={current.after} 
+                  alt="Después de PhotoBoost" 
+                  draggable="false"
+                  loading="eager"
+                />
               </div>
 
               {/* Imagen ANTES (overlay con clip) */}
@@ -166,7 +195,13 @@ const VisualResults = () => {
                 className="comparison-image before-image"
                 style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
               >
-                <img src={current.before} alt="Antes de PhotoBoost" draggable="false" />
+                <img 
+                  key={`before-${current.id}`}
+                  src={current.before} 
+                  alt="Antes de PhotoBoost" 
+                  draggable="false"
+                  loading="eager"
+                />
               </div>
 
               {/* Slider Handle */}
