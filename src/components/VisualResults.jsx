@@ -91,6 +91,7 @@ const VisualResults = () => {
   }
 
   const handleMouseDown = () => setIsDragging(true)
+  const handleTouchStart = () => setIsDragging(true)
 
   const handleMouseMove = (e) => {
     if (isDragging) {
@@ -99,27 +100,41 @@ const VisualResults = () => {
   }
 
   const handleTouchMove = (e) => {
-    if (e.touches.length > 0) {
+    if (isDragging && e.touches.length > 0) {
+      // No usar preventDefault - touch-action CSS se encarga
       handleMove(e.touches[0].clientX)
     }
   }
 
   useEffect(() => {
     const handleMouseUp = () => setIsDragging(false)
+    const handleTouchEnd = () => setIsDragging(false)
+    
     const handleGlobalMouseMove = (e) => {
       if (isDragging) {
         handleMove(e.clientX)
       }
     }
 
+    const handleGlobalTouchMove = (e) => {
+      if (isDragging && e.touches.length > 0) {
+        // No usar preventDefault - touch-action CSS se encarga
+        handleMove(e.touches[0].clientX)
+      }
+    }
+
     if (isDragging) {
       document.addEventListener('mouseup', handleMouseUp)
       document.addEventListener('mousemove', handleGlobalMouseMove)
+      document.addEventListener('touchend', handleTouchEnd)
+      document.addEventListener('touchmove', handleGlobalTouchMove, { passive: true })
     }
 
     return () => {
       document.removeEventListener('mouseup', handleMouseUp)
       document.removeEventListener('mousemove', handleGlobalMouseMove)
+      document.removeEventListener('touchend', handleTouchEnd)
+      document.removeEventListener('touchmove', handleGlobalTouchMove)
     }
   }, [isDragging, currentIndex])
 
@@ -171,6 +186,7 @@ const VisualResults = () => {
               className={`comparison-slider ${isLoading ? 'loading' : ''}`}
               ref={containerRef}
               onMouseMove={handleMouseMove}
+              onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
             >
               {/* Imagen DESPUÉS (fondo) */}
@@ -203,8 +219,7 @@ const VisualResults = () => {
                 className="slider-handle"
                 style={{ left: `${sliderPosition}%` }}
                 onMouseDown={handleMouseDown}
-                onTouchStart={() => setIsDragging(true)}
-                onTouchEnd={() => setIsDragging(false)}
+                onTouchStart={handleTouchStart}
               >
                 <div className="slider-line"></div>
                 <div className="slider-button">

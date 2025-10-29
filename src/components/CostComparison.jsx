@@ -7,7 +7,7 @@ const comparisons = [
   {
     service: 'Fotógrafo profesional',
     time: '3–5 días',
-    cost: 'USD 300+',
+    cost: 'USD 50-300',
     delivery: 'Manual',
     highlight: false,
     cons: ['Requiere coordinación', 'Depende del clima', 'Costos por sesión']

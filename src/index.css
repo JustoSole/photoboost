@@ -34,6 +34,12 @@
   box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 100px;
@@ -105,8 +111,35 @@ p {
 }
 
 @media (max-width: 480px) {
+  html {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .app {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
   .container {
     padding: 0 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   h1 {

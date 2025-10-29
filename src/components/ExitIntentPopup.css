@@ -1,0 +1,128 @@
+.exit-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.exit-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  text-align: center;
+}
+
+.exit-popup-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #666;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.exit-popup-close:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.exit-popup-content {
+  padding: 1rem;
+}
+
+.exit-popup-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.exit-popup-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.exit-popup-subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.exit-popup-description {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.exit-popup .btn {
+  margin-bottom: 1rem;
+}
+
+.exit-popup-disclaimer {
+  font-size: 0.875rem;
+  color: #999;
+  margin-top: 1rem;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .exit-popup {
+    padding: 1.5rem;
+    width: 95%;
+    border-radius: 16px;
+  }
+
+  .exit-popup-title {
+    font-size: 1.5rem;
+  }
+
+  .exit-popup-subtitle {
+    font-size: 1.125rem;
+  }
+
+  .exit-popup-icon {
+    font-size: 3rem;
+  }
+}
+

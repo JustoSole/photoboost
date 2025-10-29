@@ -74,6 +74,7 @@
   cursor: ew-resize;
   user-select: none;
   transition: opacity 0.3s ease;
+  touch-action: pan-y pinch-zoom; /* Permitir solo scroll vertical y zoom */
 }
 
 .comparison-slider.loading {
@@ -274,36 +275,56 @@
 
 /* Mobile */
 @media (max-width: 480px) {
+  /* Eliminar padding del container solo en esta sección para móvil */
+  .visual-results .container {
+    padding: 0 1.25rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
   .carousel {
     gap: 0;
     position: relative;
-    padding: 0 50px;
+    padding: 0;
+    margin: 2rem 0 2rem;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .comparison-container {
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
   .comparison-slider {
-    aspect-ratio: 1;
-    border-radius: 10px;
+    aspect-ratio: 4 / 3; /* Cambiado de 1:1 a 4:3 para mejor aprovechamiento */
+    border-radius: 12px;
   }
 
   .nav-btn {
     position: absolute;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .nav-btn-prev {
-    left: 0;
+    left: 4px; /* Sobre la imagen */
   }
 
   .nav-btn-next {
-    right: 0;
+    right: 4px; /* Sobre la imagen */
   }
 
   .nav-btn svg {
@@ -312,14 +333,14 @@
   }
 
   .slider-button {
-    width: 36px;
-    height: 36px;
-    border-width: 2px;
+    width: 44px;
+    height: 44px;
+    border-width: 2.5px;
   }
 
   .slider-button svg {
-    width: 9px;
-    height: 9px;
+    width: 10px;
+    height: 10px;
   }
 
   .dots {
@@ -337,8 +358,13 @@
   }
 
   .visual-results {
-    padding: 2.5rem 1rem;
+    padding: 3rem 0;
+    overflow: hidden; /* Prevenir scroll horizontal */
+    width: 100%;
+    max-width: 100%;
   }
+
+  /* El padding ya está en el container */
 
   .cta {
     margin-top: 2rem;

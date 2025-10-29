@@ -43,6 +43,7 @@ const Hero = () => {
   const [isDragging, setIsDragging] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const positionsRef = useRef({})
+  const sliderRef = useRef(null)
 
   // Precargar imágenes adyacentes
   useEffect(() => {
@@ -61,21 +62,71 @@ const Hero = () => {
     preloadImage(examples[prevIndex].after)
   }, [currentIndex])
 
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left
+  const handleMove = (clientX) => {
+    if (!sliderRef.current) return
+    const rect = sliderRef.current.getBoundingClientRect()
+    const x = clientX - rect.left
     const percentage = (x / rect.width) * 100
     const newPosition = Math.max(0, Math.min(100, percentage))
     setSliderPosition(newPosition)
-    setIsDragging(true)
     // Guardar la posición de esta imagen
     positionsRef.current[currentIndex] = newPosition
+  }
+
+  const handleMouseMove = (e) => {
+    handleMove(e.clientX)
+  }
+
+  const handleMouseDown = () => {
+    setIsDragging(true)
+  }
+
+  const handleTouchStart = () => {
+    setIsDragging(true)
   }
 
   const handleMouseLeave = () => {
     setIsDragging(false)
     // NO resetear - mantener la posición donde quedó
   }
+
+  // Manejar eventos globales de mouse y touch cuando está arrastrando
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => {
+      if (isDragging) {
+        handleMove(e.clientX)
+      }
+    }
+
+    const handleGlobalTouchMove = (e) => {
+      if (isDragging && e.touches.length > 0) {
+        // No usar preventDefault - touch-action CSS se encarga
+        handleMove(e.touches[0].clientX)
+      }
+    }
+
+    const handleMouseUp = () => {
+      setIsDragging(false)
+    }
+
+    const handleTouchEnd = () => {
+      setIsDragging(false)
+    }
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener('touchmove', handleGlobalTouchMove, { passive: true })
+      document.addEventListener('touchend', handleTouchEnd)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('touchmove', handleGlobalTouchMove)
+      document.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [isDragging, currentIndex])
 
   const nextExample = () => {
     setIsLoading(true)
@@ -139,9 +190,12 @@ const Hero = () => {
             </button>
 
             <div 
+              ref={sliderRef}
               className={`comparison-slider ${isLoading ? 'loading' : ''}`}
               onMouseMove={handleMouseMove}
+              onMouseDown={handleMouseDown}
               onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
             >
               <div className="image-before">
                 <img 

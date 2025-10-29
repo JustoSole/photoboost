@@ -6,7 +6,7 @@ import './PainSection.css'
 const painPoints = [
   {
     icon: FiDollarSign,
-    value: 'USD 250-400',
+    value: 'USD 50-300',
     description: 'Por sesión fotográfica profesional'
   },
   {
@@ -66,7 +66,7 @@ const PainSection = () => {
         >
           <h3>Con PhotoBoost, todo es más simple.</h3>
           <p>
-            Fotos profesionales en segundos, sin fotógrafos, sin coordinar horarios, sin pagar USD 300 por sesión. 
+            Fotos profesionales en segundos, sin fotógrafos, sin coordinar horarios, sin pagar USD 50-300 por sesión. 
             Solo cargá tus imágenes y deja que la IA haga el trabajo.
           </p>
           <div className="solution-features">
