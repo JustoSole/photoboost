@@ -16,25 +16,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Datos creíbles (no exagerados) para la beta
-    // Estos son datos simulados que parecen reales
-    
-    const basePhotos = 187;
-    const baseBetaUsers = 42;
-    const basePhotosToday = 12;
-    const baseRemainingSlots = 28;
-    
-    // Variación aleatoria pequeña (±3) para hacer los números más dinámicos
-    // Esto hace que parezca que están cambiando ligeramente
-    const randomVariation = (base, maxVariation = 3) => {
-      return base + Math.floor(Math.random() * maxVariation * 2) - maxVariation;
-    };
-    
+    // Datos fijos según solicitud del usuario
     const stats = {
-      photosProcessed: randomVariation(basePhotos, 5),
-      betaUsers: randomVariation(baseBetaUsers, 2),
-      photosToday: Math.max(1, randomVariation(basePhotosToday, 3)), // Mínimo 1
-      remainingSlots: Math.max(1, baseRemainingSlots - Math.floor(Math.random() * 2)), // Tiende a bajar ligeramente
+      photosProcessed: 500, // +500 img procesadas
+      betaUsers: 46, // 46 profesionales registrados
+      photosToday: 0, // Este campo ya no se usa
+      remainingSlots: 4, // quedan 4 lugares
       lastUpdated: new Date().toISOString()
     };
     
@@ -43,12 +30,12 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error obteniendo estadísticas:', error);
     
-    // En caso de error, retornar datos mínimos creíbles
+    // En caso de error, retornar los mismos datos fijos
     return res.status(200).json({
-      photosProcessed: 187,
-      betaUsers: 42,
-      photosToday: 12,
-      remainingSlots: 28,
+      photosProcessed: 500,
+      betaUsers: 46,
+      photosToday: 0,
+      remainingSlots: 4,
       lastUpdated: new Date().toISOString()
     });
   }

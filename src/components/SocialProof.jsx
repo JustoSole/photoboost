@@ -3,75 +3,37 @@ import './SocialProof.css'
 
 const SocialProof = () => {
   const [stats, setStats] = useState({
-    photosProcessed: 0,
-    betaUsers: 0,
+    photosProcessed: 500,
+    betaUsers: 46,
     photosToday: 0,
-    remainingSlots: 0
+    remainingSlots: 4
   })
   const [showNotification, setShowNotification] = useState(false)
   const [currentNotification, setCurrentNotification] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
   const notificationIndexRef = useRef(0)
 
   useEffect(() => {
-    // Cargar estadísticas reales
-    const loadStats = async () => {
-      try {
-        const response = await fetch('/api/stats')
-        const data = await response.json()
-        
-        // Actualizar stats directamente (sin animación para primera carga rápida)
-        setStats({
-          photosProcessed: data.photosProcessed || 187,
-          betaUsers: data.betaUsers || 42,
-          photosToday: data.photosToday || 12,
-          remainingSlots: data.remainingSlots || 28
-        })
-        
-      } catch (error) {
-        console.error('Error cargando estadísticas:', error)
-        // Fallback a datos por defecto creíbles
-        setStats({ 
-          photosProcessed: 187, 
-          betaUsers: 42, 
-          photosToday: 12,
-          remainingSlots: 28
-        })
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    
-    loadStats()
-    
-    // Actualizar cada 2 minutos para no ser muy invasivo
-    const statsInterval = setInterval(loadStats, 120000)
-    
-    // Función para mostrar notificación con stats actuales
+    // Función para mostrar notificación con stats fijos
     const showNextNotification = () => {
-      setStats(currentStats => {
-        const messages = [
-          `Solo quedan ${currentStats.remainingSlots || 28} lugares para la beta con descuentos y acceso exclusivo`,
-          `Unite a los ${currentStats.betaUsers || 42} profesionales que ya usan PhotoBoost`,
-          `Ya procesamos ${currentStats.photosToday || 12} fotos hoy`,
-          `Acceso exclusivo - Oferta por tiempo limitado`
-        ]
-        
-        const message = messages[notificationIndexRef.current % messages.length]
-        setCurrentNotification(message)
-        setShowNotification(true)
-        
-        // Ocultar después de 6 segundos
+      const messages = [
+        `Solo quedan 4 lugares para la beta con descuentos y acceso exclusivo`,
+        `Unite a los 46 profesionales que ya usan PhotoBoost`,
+        `Ya procesamos más de 500 fotos con IA`,
+        `Acceso exclusivo - Oferta por tiempo limitado`
+      ]
+      
+      const message = messages[notificationIndexRef.current % messages.length]
+      setCurrentNotification(message)
+      setShowNotification(true)
+      
+      // Ocultar después de 6 segundos
+      setTimeout(() => {
+        setShowNotification(false)
+        // Cambiar al siguiente mensaje después de ocultar
         setTimeout(() => {
-          setShowNotification(false)
-          // Cambiar al siguiente mensaje después de ocultar
-          setTimeout(() => {
-            notificationIndexRef.current = (notificationIndexRef.current + 1) % messages.length
-          }, 3000)
-        }, 6000)
-        
-        return currentStats
-      })
+          notificationIndexRef.current = (notificationIndexRef.current + 1) % messages.length
+        }, 3000)
+      }, 6000)
     }
     
     // Mostrar primera notificación después de 10 segundos
@@ -87,7 +49,6 @@ const SocialProof = () => {
     }, 50000)
     
     return () => {
-      clearInterval(statsInterval)
       clearInterval(notificationInterval)
       clearTimeout(firstNotificationTimer)
     }
@@ -98,7 +59,6 @@ const SocialProof = () => {
       {/* Notificación flotante discreta */}
       {showNotification && (
         <div className="social-proof-notification">
-          <div className="notification-icon">✨</div>
           <div className="notification-text">{currentNotification}</div>
         </div>
       )}
@@ -107,41 +67,37 @@ const SocialProof = () => {
       <div className="social-proof-banner">
         <div className="social-proof-grid">
           <div className="social-proof-item">
-            <span className="social-proof-emoji">📸</span>
             <div className="social-proof-content">
               <span className="social-proof-number">
-                {isLoading ? '...' : stats.photosProcessed || 0}
+                +{stats.photosProcessed}
               </span>
-              <span className="social-proof-label">fotos procesadas</span>
+              <span className="social-proof-label">img procesadas</span>
             </div>
           </div>
           
           <div className="social-proof-item">
-            <span className="social-proof-emoji">👥</span>
             <div className="social-proof-content">
               <span className="social-proof-number">
-                {isLoading ? '...' : stats.betaUsers || 0}
+                {stats.betaUsers}
               </span>
-              <span className="social-proof-label">profesionales en beta</span>
+              <span className="social-proof-label">profesionales registrados</span>
             </div>
           </div>
           
           <div className="social-proof-item">
-            <span className="social-proof-emoji">⚡</span>
             <div className="social-proof-content">
               <span className="social-proof-number">
-                {isLoading ? '...' : stats.photosToday || 0}
+                {stats.remainingSlots}
               </span>
-              <span className="social-proof-label">procesadas hoy</span>
+              <span className="social-proof-label">lugares restantes</span>
             </div>
           </div>
         </div>
         
         {/* Mensaje de urgencia discreto */}
         <div className="urgency-message">
-          <span className="urgency-icon">⚡</span>
           <span>
-            Solo quedan <strong>{stats.remainingSlots || 28} lugares</strong> para la beta con descuentos y acceso exclusivo
+            Solo quedan <strong>{stats.remainingSlots} lugares</strong> para la beta con descuentos y acceso exclusivo
           </span>
         </div>
       </div>
