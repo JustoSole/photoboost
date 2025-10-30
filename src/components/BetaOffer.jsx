@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { trackFormSubmission } from '../utils/analytics'
+import SocialProof from './SocialProof'
 import './BetaOffer.css'
 
 const BetaOffer = () => {
@@ -99,13 +100,15 @@ const BetaOffer = () => {
           <div className="beta-content">
             <div className="beta-header">
               <h2 className="beta-title">
-                Únete a la beta gratuita de PhotoBoost
+                Unite a la beta gratuita de PhotoBoost
               </h2>
               <p className="beta-subtitle">
-                Acceso anticipado a nuestra herramienta de IA para fotos inmobiliarias. 10 fotos gratis cada mes durante la beta.
+                Acceso anticipado a nuestra herramienta de IA para fotos inmobiliarias. Unite ahora y obtén descuentos exclusivos cuando lancemos.
                 Solo necesitamos algunos datos básicos para comenzar.
               </p>
             </div>
+
+            <SocialProof />
 
             <form className="beta-form" onSubmit={handleSubmit}>
               {/* Row 1: Name and WhatsApp */}

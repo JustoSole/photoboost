@@ -169,7 +169,7 @@ const Hero = () => {
             Fotos profesionales sin fotógrafos ni esperas
           </h1>
           <p className="hero-subtitle">
-            PhotoBoost mejora tus imágenes inmobiliarias con IA en minutos. No más fotos oscuras, pixeladas o de mala calidad. Probá gratis 10 fotos durante la beta.
+            PhotoBoost mejora tus imágenes inmobiliarias con IA en minutos. No más fotos oscuras, pixeladas o de mala calidad. Unite a la beta y accede antes que nadie con descuentos exclusivos.
           </p>
         </motion.div>
 
@@ -267,7 +267,7 @@ const Hero = () => {
           <a href="#photo-demo" className="btn btn-primary btn-large" onClick={handleCTAClick}>
             Probar ahora gratis →
           </a>
-          <p className="cta-subtext">Sin tarjeta. Sin compromiso. 10 fotos gratis.</p>
+          <p className="cta-subtext">Sin tarjeta. Sin compromiso. Acceso anticipado gratis.</p>
         </motion.div>
       </div>
     </section>

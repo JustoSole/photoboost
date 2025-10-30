@@ -51,7 +51,7 @@ const ExitIntentPopup = () => {
   }, [hasShown])
 
   const handleCTAClick = () => {
-    trackCTAClick('Exit Intent Popup', 'exit_intent')
+    trackCTAClick('Probar ahora gratis', 'exit_intent_popup')
     setShowPopup(false)
   }
 
@@ -90,7 +90,7 @@ const ExitIntentPopup = () => {
                 ¡Esperá!
               </h2>
               <p className="exit-popup-subtitle">
-                Probá gratis 10 fotos antes de irte
+                Prueba gratis y únete a la beta
               </p>
               <p className="exit-popup-description">
                 Sin tarjeta. Sin compromiso. Solo necesitamos tu feedback.

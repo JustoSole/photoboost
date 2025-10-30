@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
+import { trackCTAClick } from '../utils/analytics'
 import './VisualResults.css'
 
 const imagePairs = [
@@ -268,7 +269,11 @@ const VisualResults = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="cta"
         >
-          <a href="#photo-demo" className="btn btn-primary">
+          <a 
+            href="#photo-demo" 
+            className="btn btn-primary"
+            onClick={() => trackCTAClick('Probar ahora gratis', 'visual_results_section')}
+          >
             Probar ahora gratis
           </a>
         </motion.div>

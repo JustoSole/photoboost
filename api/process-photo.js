@@ -90,7 +90,7 @@ function getBestAspectRatio(width, height) {
 /**
  * Crear registro en Airtable
  */
-async function createAirtableRecord(whatsapp, email, empresa, fotoOriginalURL) {
+async function createAirtableRecord(name, whatsapp, email, empresa, fotoOriginalURL) {
   const baseId = process.env.AIRTABLE_BASE_ID;
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'Demos';
   const apiKey = process.env.AIRTABLE_API_KEY;
@@ -98,12 +98,13 @@ async function createAirtableRecord(whatsapp, email, empresa, fotoOriginalURL) {
   const url = `${AIRTABLE_API_URL}/${baseId}/${tableName}`;
   
   const fields = {
-    WhatsApp: whatsapp,
+    Nombre: name.trim(),
+    WhatsApp: whatsapp.trim(),
     Estado: 'procesando'
   };
   
-  if (email) fields.Email = email;
-  if (empresa) fields.Empresa = empresa;
+  if (email && email.trim()) fields.Email = email.trim();
+  if (empresa && empresa.trim()) fields.Empresa = empresa.trim();
   if (fotoOriginalURL) fields.Foto_Original_URL = fotoOriginalURL;
   
   const response = await fetch(url, {
@@ -359,9 +360,10 @@ export default async function handler(req, res) {
     }
     
     // Extraer datos del request
-    const { whatsapp, email, empresa, image } = req.body;
+    const { name, whatsapp, email, empresa, image } = req.body;
     
     console.log('📦 [process-photo] Datos recibidos:', {
+      hasName: !!name,
       hasWhatsapp: !!whatsapp,
       hasEmail: !!email,
       hasEmpresa: !!empresa,
@@ -370,11 +372,11 @@ export default async function handler(req, res) {
     });
     
     // Validar datos requeridos
-    if (!whatsapp || !image) {
-      console.log('❌ [process-photo] Datos faltantes:', { whatsapp: !whatsapp, image: !image });
+    if (!name || !whatsapp || !image) {
+      console.log('❌ [process-photo] Datos faltantes:', { name: !name, whatsapp: !whatsapp, image: !image });
       return res.status(400).json({ 
-        error: 'WhatsApp e imagen son requeridos',
-        required: { whatsapp: !whatsapp ? 'requerido' : 'ok', image: !image ? 'requerido' : 'ok' }
+        error: 'Nombre, WhatsApp e imagen son requeridos',
+        required: { name: !name ? 'requerido' : 'ok', whatsapp: !whatsapp ? 'requerido' : 'ok', image: !image ? 'requerido' : 'ok' }
       });
     }
     
@@ -412,7 +414,7 @@ export default async function handler(req, res) {
     
     // PASO 1: Crear registro en Airtable con estado "procesando"
     console.log('📝 Creando registro en Airtable...');
-    const airtableRecord = await createAirtableRecord(whatsapp, email, empresa, fotoOriginalURL);
+    const airtableRecord = await createAirtableRecord(name, whatsapp, email, empresa, fotoOriginalURL);
     recordId = airtableRecord.id;
     
     console.log(`✅ Registro creado: ${recordId}`);

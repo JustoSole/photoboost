@@ -1,9 +1,20 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { 
+  trackPhotoUpload, 
+  trackPhotoProcessStart, 
+  trackPhotoProcessComplete, 
+  trackPhotoProcessError,
+  trackPhotoDownload,
+  trackTryAnotherPhoto,
+  trackJoinBetaFromDemo,
+  trackFeedbackSubmission
+} from '../utils/analytics'
 import './PhotoDemo.css'
 
 const PhotoDemo = () => {
   // Estados del formulario
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
   const [empresa, setEmpresa] = useState('')
@@ -61,6 +72,8 @@ const PhotoDemo = () => {
       setImagePreview(base64)
       setOriginalImage(base64)
       setErrorMessage('')
+      // Trackear subida de foto
+      trackPhotoUpload(file.type, file.size)
     }
     reader.readAsDataURL(file)
   }
@@ -84,8 +97,8 @@ const PhotoDemo = () => {
   
   // Procesar foto
   const handleProcessPhoto = async () => {
-    if (!whatsapp || !originalImage) {
-      setErrorMessage('Por favor, completa tu WhatsApp y sube una foto')
+    if (!name || !whatsapp || !originalImage) {
+      setErrorMessage('Por favor, completa tu nombre, WhatsApp y sube una foto')
       return
     }
     
@@ -100,6 +113,10 @@ const PhotoDemo = () => {
     
     setStatus('uploading')
     setErrorMessage('')
+    
+    // Trackear inicio de procesamiento
+    trackPhotoProcessStart()
+    const processStartTime = Date.now()
     
     try {
       // Preparar datos
@@ -140,6 +157,7 @@ const PhotoDemo = () => {
             'Content-Type': 'application/json'
           },
         body: JSON.stringify({
+          name,
           whatsapp,
           email: email || undefined,
           empresa: empresa || undefined,
@@ -228,10 +246,18 @@ const PhotoDemo = () => {
       setProcessedImage(data.processedImage)
       setStatus('completed')
       
+      // Trackear procesamiento exitoso
+      const processingTime = Math.round((Date.now() - processStartTime) / 1000)
+      trackPhotoProcessComplete(processingTime)
+      
     } catch (error) {
       console.error('Error procesando foto:', error)
       setStatus('error')
-      setErrorMessage(error.message || 'Ocurrió un error al procesar tu foto. Por favor, intenta nuevamente.')
+      const errorMessage = error.message || 'Ocurrió un error al procesar tu foto. Por favor, intenta nuevamente.'
+      setErrorMessage(errorMessage)
+      
+      // Trackear error de procesamiento
+      trackPhotoProcessError(error.message || 'unknown_error')
     }
   }
   
@@ -281,6 +307,9 @@ const PhotoDemo = () => {
       
       setJoinedBeta(true)
       
+      // Trackear unirse a beta desde demo
+      trackJoinBetaFromDemo()
+      
     } catch (error) {
       console.error('Error uniéndose a la beta:', error)
       alert('Error al unirse a la beta. Por favor, intenta nuevamente.')
@@ -318,6 +347,12 @@ const PhotoDemo = () => {
       
       setFeedbackStatus('saved')
       
+      // Trackear envío de feedback
+      if (leGusto) trackFeedbackSubmission('leGusto', leGusto)
+      if (pagaria) trackFeedbackSubmission('pagaria', pagaria)
+      if (wtp) trackFeedbackSubmission('wtp', wtp)
+      if (comentario) trackFeedbackSubmission('comentario', 'provided')
+      
       setTimeout(() => {
         setFeedbackStatus('idle')
       }, 3000)
@@ -333,6 +368,9 @@ const PhotoDemo = () => {
   const handleDownload = () => {
     if (!processedImage) return
     
+    // Trackear descarga
+    trackPhotoDownload()
+    
     const link = document.createElement('a')
     link.href = `data:image/jpeg;base64,${processedImage}`
     link.download = 'foto-mejorada-photoboost.jpg'
@@ -341,6 +379,9 @@ const PhotoDemo = () => {
   
   // Resetear para nueva foto
   const handleReset = () => {
+    // Trackear intento de probar otra foto
+    trackTryAnotherPhoto()
+    
     setOriginalImage(null)
     setProcessedImage(null)
     setImagePreview(null)
@@ -355,6 +396,10 @@ const PhotoDemo = () => {
     setFeedbackStatus('idle')
     setJoinedBeta(false)
     setJoiningBeta(false)
+    setName('')
+    setEmail('')
+    setWhatsapp('')
+    setEmpresa('')
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -377,6 +422,18 @@ const PhotoDemo = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
+              <div className="form-group">
+                <label htmlFor="name">Nombre completo *</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Juan Pérez"
+                  required
+                />
+              </div>
+
               <div className="form-group">
                 <label htmlFor="whatsapp">WhatsApp *</label>
                 <input
@@ -464,7 +521,7 @@ const PhotoDemo = () => {
               <button
                 className="btn-primary btn-process"
                 onClick={handleProcessPhoto}
-                disabled={!whatsapp || !originalImage || status === 'uploading' || status === 'processing'}
+                disabled={!name || !whatsapp || !originalImage || status === 'uploading' || status === 'processing'}
               >
                 {status === 'uploading' || status === 'processing' ? 'Procesando...' : 'Mejorar con IA'}
               </button>
@@ -555,12 +612,12 @@ const PhotoDemo = () => {
                 <div className="beta-conversion">
                   <div className="beta-conversion-content">
                     <h3>¿Te gustó el resultado?</h3>
-                    <p>Únete a nuestra beta exclusiva y obtén:</p>
+                    <p>Unite a nuestra beta exclusiva y obtén:</p>
                     <ul>
-                      <li>✓ 10 fotos gratis cada mes</li>
-                      <li>✓ Acceso prioritario a nuevas funciones</li>
+                      <li>✓ Acceso anticipado a la plataforma</li>
+                      <li>✓ Descuentos exclusivos al lanzamiento</li>
                       <li>✓ Soporte personalizado</li>
-                      <li>✓ Descuentos especiales para early adopters</li>
+                      <li>✓ Nuevas funciones antes que nadie</li>
                     </ul>
                     <button 
                       className="btn-primary btn-join-beta"
@@ -588,19 +645,28 @@ const PhotoDemo = () => {
                 <div className="feedback-buttons">
                   <button
                     className={`feedback-btn ${leGusto === '😍 Me encantó' ? 'active' : ''}`}
-                    onClick={() => setLeGusto('😍 Me encantó')}
+                    onClick={() => {
+                      setLeGusto('😍 Me encantó')
+                      trackFeedbackSubmission('leGusto', '😍 Me encantó')
+                    }}
                   >
                     😍 Me encantó
                   </button>
                   <button
                     className={`feedback-btn ${leGusto === '👍 Está bien' ? 'active' : ''}`}
-                    onClick={() => setLeGusto('👍 Está bien')}
+                    onClick={() => {
+                      setLeGusto('👍 Está bien')
+                      trackFeedbackSubmission('leGusto', '👍 Está bien')
+                    }}
                   >
                     👍 Está bien
                   </button>
                   <button
                     className={`feedback-btn ${leGusto === '👎 No me convenció' ? 'active' : ''}`}
-                    onClick={() => setLeGusto('👎 No me convenció')}
+                    onClick={() => {
+                      setLeGusto('👎 No me convenció')
+                      trackFeedbackSubmission('leGusto', '👎 No me convenció')
+                    }}
                   >
                     👎 No me convenció
                   </button>
@@ -612,19 +678,28 @@ const PhotoDemo = () => {
                     <div className="wtp-buttons">
                       <button
                         className={`wtp-btn ${pagaria === 'Sí' ? 'active' : ''}`}
-                        onClick={() => setPagaria('Sí')}
+                        onClick={() => {
+                          setPagaria('Sí')
+                          trackFeedbackSubmission('pagaria', 'Sí')
+                        }}
                       >
                         Sí
                       </button>
                       <button
                         className={`wtp-btn ${pagaria === 'Tal vez' ? 'active' : ''}`}
-                        onClick={() => setPagaria('Tal vez')}
+                        onClick={() => {
+                          setPagaria('Tal vez')
+                          trackFeedbackSubmission('pagaria', 'Tal vez')
+                        }}
                       >
                         Tal vez
                       </button>
                       <button
                         className={`wtp-btn ${pagaria === 'No' ? 'active' : ''}`}
-                        onClick={() => setPagaria('No')}
+                        onClick={() => {
+                          setPagaria('No')
+                          trackFeedbackSubmission('pagaria', 'No')
+                        }}
                       >
                         No
                       </button>
@@ -632,13 +707,16 @@ const PhotoDemo = () => {
                     
                     {(pagaria === 'Sí' || pagaria === 'Tal vez') && (
                       <div className="wtp-amount">
-                        <p>¿Cuánto pagarías por 10 fotos así?</p>
+                        <p>¿Cuánto pagarías por fotos de esta calidad?</p>
                         <div className="wtp-options">
                           {[5, 10, 15, 20].map(amount => (
                             <button
                               key={amount}
                               className={`wtp-option ${wtp === amount.toString() ? 'active' : ''}`}
-                              onClick={() => setWtp(amount.toString())}
+                              onClick={() => {
+                                setWtp(amount.toString())
+                                trackFeedbackSubmission('wtp', `USD ${amount}`)
+                              }}
                             >
                               USD {amount}
                             </button>
@@ -647,7 +725,12 @@ const PhotoDemo = () => {
                             type="number"
                             placeholder="Otro"
                             value={wtp && !['5', '10', '15', '20'].includes(wtp) ? wtp : ''}
-                            onChange={(e) => setWtp(e.target.value)}
+                            onChange={(e) => {
+                              setWtp(e.target.value)
+                              if (e.target.value) {
+                                trackFeedbackSubmission('wtp', `USD ${e.target.value}`)
+                              }
+                            }}
                             className="wtp-input"
                           />
                         </div>
@@ -682,7 +765,7 @@ const PhotoDemo = () => {
                   
                   {feedbackStatus === 'saved' && (
                     <div className="post-feedback-message">
-                      <p>¿Te gustó el resultado? ¡Únete a nuestra beta exclusiva!</p>
+                      <p>¿Te gustó el resultado? ¡Unite a nuestra beta exclusiva!</p>
                       <a href="#beta" className="btn-secondary btn-beta-cta">
                         🚀 Ver Más Opciones Beta
                       </a>

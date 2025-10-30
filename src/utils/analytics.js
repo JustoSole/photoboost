@@ -100,6 +100,96 @@ export const trackTimeOnPage = (seconds) => {
 }
 
 /**
+ * Trackea cuando el usuario sube una foto para probar
+ * @param {string} fileType - Tipo de archivo (image/jpeg, etc.)
+ * @param {number} fileSize - Tamaño del archivo en bytes
+ */
+export const trackPhotoUpload = (fileType, fileSize) => {
+  trackEvent('photo_upload', {
+    event_category: 'free_trial',
+    event_label: 'photo_uploaded',
+    file_type: fileType,
+    file_size_kb: Math.round(fileSize / 1024)
+  })
+}
+
+/**
+ * Trackea cuando el usuario inicia el procesamiento de una foto
+ */
+export const trackPhotoProcessStart = () => {
+  trackEvent('photo_process_start', {
+    event_category: 'free_trial',
+    event_label: 'processing_initiated'
+  })
+}
+
+/**
+ * Trackea cuando el procesamiento de la foto se completa exitosamente
+ * @param {number} processingTime - Tiempo de procesamiento en segundos
+ */
+export const trackPhotoProcessComplete = (processingTime) => {
+  trackEvent('photo_process_complete', {
+    event_category: 'conversion',
+    event_label: 'free_trial_success',
+    value: processingTime
+  })
+}
+
+/**
+ * Trackea cuando hay un error procesando la foto
+ * @param {string} errorType - Tipo de error
+ */
+export const trackPhotoProcessError = (errorType) => {
+  trackEvent('photo_process_error', {
+    event_category: 'free_trial',
+    event_label: errorType
+  })
+}
+
+/**
+ * Trackea cuando el usuario descarga la foto mejorada
+ */
+export const trackPhotoDownload = () => {
+  trackEvent('photo_download', {
+    event_category: 'conversion',
+    event_label: 'photo_downloaded'
+  })
+}
+
+/**
+ * Trackea cuando el usuario decide probar otra foto (reset)
+ */
+export const trackTryAnotherPhoto = () => {
+  trackEvent('try_another_photo', {
+    event_category: 'free_trial',
+    event_label: 'reset_to_upload'
+  })
+}
+
+/**
+ * Trackea cuando el usuario se une a la beta desde PhotoDemo
+ */
+export const trackJoinBetaFromDemo = () => {
+  trackEvent('join_beta_from_demo', {
+    event_category: 'conversion',
+    event_label: 'beta_signup_after_trial'
+  })
+}
+
+/**
+ * Trackea cuando el usuario envía feedback después de probar la foto
+ * @param {string} feedbackType - Tipo de feedback (leGusto, pagaria, etc.)
+ * @param {string} value - Valor del feedback
+ */
+export const trackFeedbackSubmission = (feedbackType, value) => {
+  trackEvent('feedback_submission', {
+    event_category: 'free_trial',
+    event_label: feedbackType,
+    feedback_value: value
+  })
+}
+
+/**
  * Inicializa los trackers automáticos de scroll y tiempo
  */
 export const initializeAutoTracking = () => {
