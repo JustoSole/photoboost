@@ -44,14 +44,36 @@ async function createBetaRecord(name, email, whatsapp, empresa) {
   });
   
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Airtable error: ${error.error?.message || 'Unknown error'}`);
+    let errorMessage = 'Unknown error';
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error?.message || errorData.error?.type || JSON.stringify(errorData);
+      console.error('❌ Error de Airtable:', {
+        status: response.status,
+        error: errorData,
+        fieldsAttempted: Object.keys(fields)
+      });
+    } catch (parseError) {
+      const errorText = await response.text();
+      errorMessage = `HTTP ${response.status}: ${errorText || response.statusText}`;
+      console.error('❌ Error sin JSON:', errorMessage);
+    }
+    throw new Error(`Airtable error: ${errorMessage}`);
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log(`✅ Registro creado exitosamente: ${result.id}`);
+  return result;
 }
 
 export default async function handler(req, res) {
+  console.log('🟢 [register-beta] Request recibido:', {
+    method: req.method,
+    url: req.url,
+    hasBody: !!req.body,
+    bodyKeys: req.body ? Object.keys(req.body) : null
+  });
+  
   // Solo permitir POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -60,14 +82,29 @@ export default async function handler(req, res) {
   try {
     // Validar variables de entorno
     if (!process.env.AIRTABLE_API_KEY || !process.env.AIRTABLE_BASE_ID) {
+      console.error('❌ Variables de entorno faltantes:', {
+        hasAPI_KEY: !!process.env.AIRTABLE_API_KEY,
+        hasBASE_ID: !!process.env.AIRTABLE_BASE_ID
+      });
       throw new Error('Variables de entorno de Airtable no configuradas');
     }
+    
+    console.log('✅ Variables de entorno OK');
     
     // Extraer datos del request
     const { name, email, whatsapp, empresa } = req.body;
     
+    console.log('📦 Datos recibidos:', {
+      hasName: !!name,
+      name: name ? name.substring(0, 20) + '...' : null,
+      hasEmail: !!email,
+      hasWhatsapp: !!whatsapp,
+      hasEmpresa: !!empresa
+    });
+    
     // Validar datos requeridos
     if (!name || !whatsapp) {
+      console.error('❌ Datos faltantes:', { hasName: !!name, hasWhatsapp: !!whatsapp });
       return res.status(400).json({ 
         error: 'Nombre y WhatsApp son requeridos'
       });
