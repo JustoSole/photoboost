@@ -17,6 +17,7 @@ const PhotoDemo = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
+  const [precio10Imagenes, setPrecio10Imagenes] = useState('')
   
   // Estados de la foto
   const [originalImage, setOriginalImage] = useState(null)
@@ -28,7 +29,7 @@ const PhotoDemo = () => {
   const [status, setStatus] = useState('idle') // idle, uploading, processing, completed, error
   const [errorMessage, setErrorMessage] = useState('')
   const [recordId, setRecordId] = useState(null)
-  const [processingMessage, setProcessingMessage] = useState('')
+  const [processingMessage, setProcessingMessage] = useState({ text: '', subtitle: '' })
   const [processingProgress, setProcessingProgress] = useState(0)
   
   // Estados del slider
@@ -119,9 +120,10 @@ const PhotoDemo = () => {
   const simulateProgress = () => {
     let messageIndex = 0
     let progress = 0
+    let isActive = true
     
     const updateProgress = () => {
-      if (status !== 'processing') return
+      if (!isActive) return
       
       // Actualizar mensaje
       if (messageIndex < processingMessages.length) {
@@ -135,12 +137,15 @@ const PhotoDemo = () => {
       setProcessingProgress(Math.min(progress, 95))
       
       // Continuar si aún está procesando
-      if (status === 'processing' && messageIndex < processingMessages.length) {
+      if (isActive && messageIndex < processingMessages.length) {
         setTimeout(updateProgress, 2000 + Math.random() * 1000)
       }
     }
     
     updateProgress()
+    
+    // Retornar función para detener la animación
+    return () => { isActive = false }
   }
 
   // Procesar foto
@@ -187,10 +192,13 @@ const PhotoDemo = () => {
     setStatus('uploading')
     setErrorMessage('')
     setProcessingProgress(0)
+    setProcessingMessage({ text: '📤 Subiendo tu foto...', subtitle: 'Preparando para el procesamiento' })
     
     // Trackear inicio de procesamiento
     trackPhotoProcessStart()
     const processStartTime = Date.now()
+    
+    let stopProgress = null
     
     try {
       // Preparar datos
@@ -201,8 +209,8 @@ const PhotoDemo = () => {
       // Cambiar a estado de procesamiento después de preparar datos
       setStatus('processing')
       
-      // Iniciar simulación de progreso
-      simulateProgress()
+      // Iniciar simulación de progreso y guardar función de limpieza
+      stopProgress = simulateProgress()
       
       const response = await fetch('/api/process-photo', {
         method: 'POST',
@@ -213,7 +221,8 @@ const PhotoDemo = () => {
           name: userData.name,
           whatsapp: userData.whatsapp,
           email: userData.email || undefined,
-          image: imageData
+          image: imageData,
+          wtp: precio10Imagenes || undefined
         })
       })
       
@@ -226,6 +235,9 @@ const PhotoDemo = () => {
       if (!data.success) {
         throw new Error(data.error || 'Error al procesar la foto')
       }
+      
+      // Detener la animación de progreso
+      if (stopProgress) stopProgress()
       
       // Completar progreso
       setProcessingProgress(100)
@@ -244,10 +256,25 @@ const PhotoDemo = () => {
         // Trackear procesamiento exitoso
         const processingTime = Math.round((Date.now() - processStartTime) / 1000)
         trackPhotoProcessComplete(processingTime)
+        
+        // Hacer scroll suave a los resultados después de un breve delay
+        setTimeout(() => {
+          const resultElement = document.querySelector('.result-state')
+          if (resultElement) {
+            resultElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start'
+            })
+          }
+        }, 300)
       }, 800)
       
     } catch (error) {
       console.error('Error procesando foto:', error)
+      
+      // Detener la animación de progreso si hay error
+      if (stopProgress) stopProgress()
+      
       setStatus('error')
       const errorMessage = error.message || 'Ocurrió un error al procesar tu foto. Por favor, intenta nuevamente.'
       setErrorMessage(errorMessage)
@@ -281,13 +308,14 @@ const PhotoDemo = () => {
     setStatus('idle')
     setRecordId(null)
     setErrorMessage('')
-    setProcessingMessage('')
+    setProcessingMessage({ text: '', subtitle: '' })
     setProcessingProgress(0)
     setSliderPosition(50)
     setLeGusto('')
     setPagaria('')
     setWtp('')
     setComentario('')
+    setPrecio10Imagenes('')
     setFeedbackStatus('idle')
     setJoinedBeta(false)
     setJoiningBeta(false)
@@ -303,6 +331,17 @@ const PhotoDemo = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
+    
+    // Hacer scroll suave al inicio del formulario
+    setTimeout(() => {
+      const demoElement = document.querySelector('.photo-demo')
+      if (demoElement) {
+        demoElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        })
+      }
+    }, 100)
   }
   
   // Unirse a Beta
@@ -503,6 +542,7 @@ const PhotoDemo = () => {
                         onClick={() => {
                           setImagePreview(null)
                           setOriginalImage(null)
+                          setPrecio10Imagenes('')
                           if (fileInputRef.current) fileInputRef.current.value = ''
                         }}
                       >
@@ -523,6 +563,29 @@ const PhotoDemo = () => {
                   )}
                 </div>
               </div>
+              
+              {/* Pregunta sobre precio de 10 imágenes - solo mostrar si hay imagen */}
+              {imagePreview && (
+                <motion.div 
+                  className="form-group"
+                  style={{ marginTop: '1.5rem' }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <label htmlFor="precio10Imagenes" style={{ fontSize: '1rem', fontWeight: '600' }}>
+                    ¿Cuánto pagarías por 10 imágenes? <span style={{ color: '#666', fontSize: '0.9em', fontWeight: 'normal' }}>(opcional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="precio10Imagenes"
+                    value={precio10Imagenes}
+                    onChange={(e) => setPrecio10Imagenes(e.target.value)}
+                    placeholder="Ej: USD 50, $100, ARS 5000, etc."
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                </motion.div>
+              )}
               
               {errorMessage && (
                 <div className="error-message">{errorMessage}</div>

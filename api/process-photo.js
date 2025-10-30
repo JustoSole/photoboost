@@ -90,7 +90,7 @@ function getBestAspectRatio(width, height) {
 /**
  * Crear registro en Airtable
  */
-async function createAirtableRecord(name, whatsapp, email, empresa, fotoOriginalURL) {
+async function createAirtableRecord(name, whatsapp, email, empresa, fotoOriginalURL, wtp) {
   const baseId = process.env.AIRTABLE_BASE_ID;
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'Demos';
   const apiKey = process.env.AIRTABLE_API_KEY;
@@ -112,6 +112,7 @@ async function createAirtableRecord(name, whatsapp, email, empresa, fotoOriginal
   
   if (empresa && empresa.trim()) fields.Empresa = empresa.trim();
   if (fotoOriginalURL) fields.Foto_Original_URL = fotoOriginalURL;
+  if (wtp && wtp.trim()) fields.WTP = wtp.trim();
   
   const response = await fetch(url, {
     method: 'POST',
@@ -366,7 +367,7 @@ export default async function handler(req, res) {
     }
     
     // Extraer datos del request
-    const { name, whatsapp, email, empresa, image } = req.body;
+    const { name, whatsapp, email, empresa, image, wtp } = req.body;
     
     console.log('📦 [process-photo] Datos recibidos:', {
       hasName: !!name,
@@ -374,6 +375,7 @@ export default async function handler(req, res) {
       hasEmail: !!email,
       hasEmpresa: !!empresa,
       hasImage: !!image,
+      hasWtp: !!wtp,
       imageLength: image ? image.length : 0
     });
     
@@ -420,7 +422,7 @@ export default async function handler(req, res) {
     
     // PASO 1: Crear registro en Airtable con estado "procesando"
     console.log('📝 Creando registro en Airtable...');
-    const airtableRecord = await createAirtableRecord(name, whatsapp, email, empresa, fotoOriginalURL);
+    const airtableRecord = await createAirtableRecord(name, whatsapp, email, empresa, fotoOriginalURL, wtp);
     recordId = airtableRecord.id;
     
     console.log(`✅ Registro creado: ${recordId}`);
