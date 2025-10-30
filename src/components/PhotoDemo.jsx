@@ -256,17 +256,6 @@ const PhotoDemo = () => {
         // Trackear procesamiento exitoso
         const processingTime = Math.round((Date.now() - processStartTime) / 1000)
         trackPhotoProcessComplete(processingTime)
-        
-        // Hacer scroll suave a los resultados después de un breve delay
-        setTimeout(() => {
-          const resultElement = document.querySelector('.result-state')
-          if (resultElement) {
-            resultElement.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'start'
-            })
-          }
-        }, 300)
       }, 800)
       
     } catch (error) {
@@ -331,17 +320,6 @@ const PhotoDemo = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
-    
-    // Hacer scroll suave al inicio del formulario
-    setTimeout(() => {
-      const demoElement = document.querySelector('.photo-demo')
-      if (demoElement) {
-        demoElement.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start'
-        })
-      }
-    }, 100)
   }
   
   // Unirse a Beta
@@ -471,7 +449,7 @@ const PhotoDemo = () => {
           )}
           
           {/* Formulario de información */}
-          {status === 'idle' && trialCount < 3 && (
+          {(status === 'idle' || status === 'uploading' || status === 'processing') && trialCount < 3 && (
             <motion.div 
               className="demo-form"
               initial={{ opacity: 0, y: 20 }}
