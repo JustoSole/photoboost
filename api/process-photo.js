@@ -104,6 +104,7 @@ async function createAirtableRecord(name, whatsapp, email, empresa, fotoOriginal
     : `${name.trim().replace(/\s+/g, '_').toLowerCase()}@placeholder.local`;
   
   const fields = {
+    Nombre: name.trim(), // Campo nombre agregado
     Email: emailToUse, // Email es el campo principal
     WhatsApp: whatsapp.trim(),
     Estado: 'procesando'

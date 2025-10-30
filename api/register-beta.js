@@ -23,6 +23,7 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
     : `${name.trim().replace(/\s+/g, '_').toLowerCase()}@placeholder.local`;
   
   const fields = {
+    Nombre: name.trim(), // Campo nombre agregado
     Email: emailToUse, // Email es el campo principal
     WhatsApp: whatsapp.trim(), 
     Estado: 'beta_registrado', // Estado específico para registro directo
