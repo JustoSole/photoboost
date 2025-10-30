@@ -13,8 +13,7 @@ const BetaOffer = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
-    companyName: ''
+    phone: ''
   })
 
   const handleInputChange = (e) => {
@@ -35,7 +34,6 @@ const BetaOffer = () => {
           name: formData.name,
           email: formData.email,
           whatsapp: formData.phone,
-          empresa: formData.companyName,
           beta: true // Registro directo a beta
         })
       })
@@ -74,8 +72,7 @@ const BetaOffer = () => {
         setFormData({
           name: '',
           email: '',
-          phone: '',
-          companyName: ''
+          phone: ''
         })
         setSubmitStatus(null)
         setShowThankYouModal(false)
@@ -152,19 +149,6 @@ const BetaOffer = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="juan@empresa.com"
-                />
-              </div>
-
-              {/* Row 3: Company Name */}
-              <div className="form-group">
-                <label htmlFor="companyName">Nombre de la empresa</label>
-                <input
-                  type="text"
-                  id="companyName"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleInputChange}
-                  placeholder="Mi Empresa S.A."
                 />
               </div>
 

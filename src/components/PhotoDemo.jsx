@@ -17,7 +17,6 @@ const PhotoDemo = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
-  const [empresa, setEmpresa] = useState('')
   
   // Estados de la foto
   const [originalImage, setOriginalImage] = useState(null)
@@ -29,6 +28,8 @@ const PhotoDemo = () => {
   const [status, setStatus] = useState('idle') // idle, uploading, processing, completed, error
   const [errorMessage, setErrorMessage] = useState('')
   const [recordId, setRecordId] = useState(null)
+  const [processingMessage, setProcessingMessage] = useState('')
+  const [processingProgress, setProcessingProgress] = useState(0)
   
   // Estados del slider
   const [sliderPosition, setSliderPosition] = useState(50)
@@ -53,8 +54,7 @@ const PhotoDemo = () => {
   const [savedUserData, setSavedUserData] = useState({
     name: '',
     email: '',
-    whatsapp: '',
-    empresa: ''
+    whatsapp: ''
   })
   
   // Manejar selección de archivo
@@ -106,6 +106,43 @@ const PhotoDemo = () => {
     }
   }
   
+  // Mensajes dinámicos para el procesamiento
+  const processingMessages = [
+    { text: '🔍 Analizando tu foto...', subtitle: 'Detectando elementos y características' },
+    { text: '✨ Aplicando mejoras de IA...', subtitle: 'Optimizando colores y detalles' },
+    { text: '🎨 Ajustando la iluminación...', subtitle: 'Creando el balance perfecto' },
+    { text: '🌟 Finalizando los detalles...', subtitle: 'Últimos toques de calidad' },
+    { text: '📸 ¡Casi listo!', subtitle: 'Preparando tu foto mejorada' }
+  ]
+
+  // Simular progreso dinámico
+  const simulateProgress = () => {
+    let messageIndex = 0
+    let progress = 0
+    
+    const updateProgress = () => {
+      if (status !== 'processing') return
+      
+      // Actualizar mensaje
+      if (messageIndex < processingMessages.length) {
+        setProcessingMessage(processingMessages[messageIndex])
+        messageIndex++
+      }
+      
+      // Actualizar progreso (simulado)
+      progress += Math.random() * 20
+      if (progress > 95) progress = 95 // No llegar al 100% hasta completar
+      setProcessingProgress(Math.min(progress, 95))
+      
+      // Continuar si aún está procesando
+      if (status === 'processing' && messageIndex < processingMessages.length) {
+        setTimeout(updateProgress, 2000 + Math.random() * 1000)
+      }
+    }
+    
+    updateProgress()
+  }
+
   // Procesar foto
   const handleProcessPhoto = async () => {
     // Verificar límite de pruebas
@@ -123,8 +160,7 @@ const PhotoDemo = () => {
     const userData = userDataEntered ? savedUserData : {
       name,
       email,
-      whatsapp,
-      empresa
+      whatsapp
     }
     
     // Si es la primera vez, validar datos
@@ -150,6 +186,7 @@ const PhotoDemo = () => {
     
     setStatus('uploading')
     setErrorMessage('')
+    setProcessingProgress(0)
     
     // Trackear inicio de procesamiento
     trackPhotoProcessStart()
@@ -164,6 +201,9 @@ const PhotoDemo = () => {
       // Cambiar a estado de procesamiento después de preparar datos
       setStatus('processing')
       
+      // Iniciar simulación de progreso
+      simulateProgress()
+      
       const response = await fetch('/api/process-photo', {
         method: 'POST',
         headers: {
@@ -173,7 +213,6 @@ const PhotoDemo = () => {
           name: userData.name,
           whatsapp: userData.whatsapp,
           email: userData.email || undefined,
-          empresa: userData.empresa || undefined,
           image: imageData
         })
       })
@@ -188,17 +227,24 @@ const PhotoDemo = () => {
         throw new Error(data.error || 'Error al procesar la foto')
       }
       
-      // Guardar resultado
-      setRecordId(data.recordId)
-      setProcessedImage(data.processedImage)
-      setStatus('completed')
+      // Completar progreso
+      setProcessingProgress(100)
+      setProcessingMessage({ text: '✅ ¡Listo!', subtitle: 'Tu foto ha sido mejorada exitosamente' })
       
-      // Incrementar contador de pruebas
-      setTrialCount(prev => prev + 1)
-      
-      // Trackear procesamiento exitoso
-      const processingTime = Math.round((Date.now() - processStartTime) / 1000)
-      trackPhotoProcessComplete(processingTime)
+      // Pequeño delay para mostrar el 100%
+      setTimeout(() => {
+        // Guardar resultado
+        setRecordId(data.recordId)
+        setProcessedImage(data.processedImage)
+        setStatus('completed')
+        
+        // Incrementar contador de pruebas
+        setTrialCount(prev => prev + 1)
+        
+        // Trackear procesamiento exitoso
+        const processingTime = Math.round((Date.now() - processStartTime) / 1000)
+        trackPhotoProcessComplete(processingTime)
+      }, 800)
       
     } catch (error) {
       console.error('Error procesando foto:', error)
@@ -235,6 +281,8 @@ const PhotoDemo = () => {
     setStatus('idle')
     setRecordId(null)
     setErrorMessage('')
+    setProcessingMessage('')
+    setProcessingProgress(0)
     setSliderPosition(50)
     setLeGusto('')
     setPagaria('')
@@ -250,7 +298,6 @@ const PhotoDemo = () => {
       setName('')
       setEmail('')
       setWhatsapp('')
-      setEmpresa('')
     }
     
     if (fileInputRef.current) {
@@ -346,7 +393,26 @@ const PhotoDemo = () => {
       <div className="container">
         <div className="photo-demo-content">
           <h2 className="photo-demo-title">
-            {userDataEntered ? `Prueba otra foto (${3 - trialCount} restantes)` : 'Prueba Gratis con Tu Foto'}
+            {userDataEntered ? (
+              <>
+                Prueba otra foto 
+                <span style={{
+                  display: 'inline-block',
+                  background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                  color: 'white',
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '20px',
+                  fontSize: '0.8em',
+                  fontWeight: '600',
+                  marginLeft: '0.5rem',
+                  verticalAlign: 'middle'
+                }}>
+                  {3 - trialCount} restantes
+                </span>
+              </>
+            ) : (
+              'Prueba Gratis con Tu Foto'
+            )}
           </h2>
           <p className="photo-demo-subtitle">
             {userDataEntered 
@@ -410,17 +476,6 @@ const PhotoDemo = () => {
                         placeholder="tu@email.com"
                       />
                     </div>
-                    
-                    <div className="form-group">
-                      <label htmlFor="empresa">Empresa (opcional)</label>
-                      <input
-                        type="text"
-                        id="empresa"
-                        value={empresa}
-                        onChange={(e) => setEmpresa(e.target.value)}
-                        placeholder="Nombre de tu empresa"
-                      />
-                    </div>
                   </div>
                 </>
               )}
@@ -481,12 +536,68 @@ const PhotoDemo = () => {
                 {(status === 'uploading' || status === 'processing') ? 'Procesando con IA...' : '✨ Mejorar con IA'}
               </button>
               
-              {/* Indicador de carga */}
+              {/* Indicador de carga mejorado */}
               {(status === 'uploading' || status === 'processing') && (
-                <div className="processing-indicator">
-                  <div className="spinner"></div>
-                  <p>Estamos mejorando tu foto con IA. Esto puede tomar 10-20 segundos...</p>
-                </div>
+                <motion.div 
+                  className="processing-indicator"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="spinner">
+                    <div className="spinner-ring"></div>
+                    <div className="spinner-ring"></div>
+                    <div className="spinner-ring"></div>
+                    <div className="spinner-dots">
+                      <div className="spinner-dot"></div>
+                      <div className="spinner-dot"></div>
+                      <div className="spinner-dot"></div>
+                      <div className="spinner-dot"></div>
+                    </div>
+                  </div>
+                  
+                  {status === 'uploading' ? (
+                    <>
+                      <p className="processing-text">📤 Subiendo tu foto...</p>
+                      <p className="processing-subtitle">Preparando para el procesamiento</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="processing-text">{processingMessage.text}</p>
+                      <p className="processing-subtitle">{processingMessage.subtitle}</p>
+                      
+                      {/* Barra de progreso */}
+                      <div style={{
+                        width: '100%',
+                        height: '6px',
+                        backgroundColor: '#e5e7eb',
+                        borderRadius: '3px',
+                        marginTop: '1rem',
+                        overflow: 'hidden'
+                      }}>
+                        <motion.div
+                          style={{
+                            height: '100%',
+                            background: 'linear-gradient(90deg, #22c55e, #16a34a)',
+                            borderRadius: '3px'
+                          }}
+                          initial={{ width: '0%' }}
+                          animate={{ width: `${processingProgress}%` }}
+                          transition={{ duration: 0.5, ease: 'easeOut' }}
+                        />
+                      </div>
+                      
+                      <p style={{
+                        margin: '0.5rem 0 0 0',
+                        fontSize: '0.8rem',
+                        color: '#6b7280',
+                        fontWeight: '500'
+                      }}>
+                        {Math.round(processingProgress)}% completado
+                      </p>
+                    </>
+                  )}
+                </motion.div>
               )}
             </motion.div>
           )}
