@@ -97,13 +97,18 @@ async function createAirtableRecord(name, whatsapp, email, empresa, fotoOriginal
   
   const url = `${AIRTABLE_API_URL}/${baseId}/${tableName}`;
   
+  // Email es el campo principal en Airtable
+  // Si no hay email, usar un placeholder con el nombre
+  const emailToUse = (email && email.trim()) 
+    ? email.trim() 
+    : `${name.trim().replace(/\s+/g, '_').toLowerCase()}@placeholder.local`;
+  
   const fields = {
-    Nombre: name.trim(),
+    Email: emailToUse, // Email es el campo principal
     WhatsApp: whatsapp.trim(),
     Estado: 'procesando'
   };
   
-  if (email && email.trim()) fields.Email = email.trim();
   if (empresa && empresa.trim()) fields.Empresa = empresa.trim();
   if (fotoOriginalURL) fields.Foto_Original_URL = fotoOriginalURL;
   

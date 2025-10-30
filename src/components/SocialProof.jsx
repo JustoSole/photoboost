@@ -18,7 +18,7 @@ const SocialProof = () => {
     const loadStats = async () => {
       try {
         const response = await fetch('/api/stats')
-        const data = await response.json知识产权()
+        const data = await response.json()
         
         // Actualizar stats directamente (sin animación para primera carga rápida)
         setStats({

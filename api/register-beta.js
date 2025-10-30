@@ -16,15 +16,20 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
   
   const url = `${AIRTABLE_API_URL}/${baseId}/${tableName}`;
   
+  // Email es el campo principal en Airtable
+  // Si no hay email, usar un placeholder con el nombre
+  const emailToUse = (email && email.trim()) 
+    ? email.trim() 
+    : `${name.trim().replace(/\s+/g, '_').toLowerCase()}@placeholder.local`;
+  
   const fields = {
-    Nombre: name.trim(),
+    Email: emailToUse, // Email es el campo principal
     WhatsApp: whatsapp.trim(), 
     Estado: 'beta_registrado', // Estado específico para registro directo
     Beta: beta
   };
   
   // Agregar campos opcionales solo si están presentes
-  if (email && email.trim()) fields.Email = email.trim();
   if (empresa && empresa.trim()) fields.Empresa = empresa.trim();
   
   const response = await fetch(url, {
