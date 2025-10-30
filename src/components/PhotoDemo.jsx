@@ -45,6 +45,7 @@ const PhotoDemo = () => {
   // Estados de beta
   const [joinedBeta, setJoinedBeta] = useState(false)
   const [joiningBeta, setJoiningBeta] = useState(false)
+  const [betaResponse, setBetaResponse] = useState(null) // null, 'yes', 'later'
   
   // Estados para control de pruebas
   const [trialCount, setTrialCount] = useState(0)
@@ -160,6 +161,9 @@ const PhotoDemo = () => {
         ? originalImage 
         : `data:image/jpeg;base64,${originalImage}`
       
+      // Cambiar a estado de procesamiento después de preparar datos
+      setStatus('processing')
+      
       const response = await fetch('/api/process-photo', {
         method: 'POST',
         headers: {
@@ -239,6 +243,7 @@ const PhotoDemo = () => {
     setFeedbackStatus('idle')
     setJoinedBeta(false)
     setJoiningBeta(false)
+    setBetaResponse(null)
     
     // Solo resetear datos del usuario si no han sido guardados
     if (!userDataEntered) {
@@ -471,25 +476,21 @@ const PhotoDemo = () => {
               <button
                 className="btn-primary btn-process"
                 onClick={handleProcessPhoto}
-                disabled={!originalImage || status === 'uploading'}
+                disabled={!originalImage || status === 'uploading' || status === 'processing'}
               >
-                {status === 'uploading' ? 'Procesando...' : '✨ Mejorar con IA'}
+                {(status === 'uploading' || status === 'processing') ? 'Procesando con IA...' : '✨ Mejorar con IA'}
               </button>
+              
+              {/* Indicador de carga */}
+              {(status === 'uploading' || status === 'processing') && (
+                <div className="processing-indicator">
+                  <div className="spinner"></div>
+                  <p>Estamos mejorando tu foto con IA. Esto puede tomar 10-20 segundos...</p>
+                </div>
+              )}
             </motion.div>
           )}
 
-          {/* Estado de procesamiento */}
-          {status === 'processing' && (
-            <motion.div 
-              className="processing-state"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <div className="spinner"></div>
-              <h3>Procesando con IA...</h3>
-              <p>Esto puede tomar 10-20 segundos. ¡Estamos mejorando tu foto!</p>
-            </motion.div>
-          )}
 
           {/* Error */}
           {status === 'error' && (
@@ -522,11 +523,11 @@ const PhotoDemo = () => {
               
               {/* Slider Before/After */}
               <div className="comparison-slider" ref={sliderRef}>
-                <div className="image-after">
-                  <img src={`data:image/jpeg;base64,${processedImage}`} alt="Después" />
-                </div>
-                <div className="image-before" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
+                <div className="image-before">
                   <img src={originalImage} alt="Antes" />
+                </div>
+                <div className="image-after" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
+                  <img src={`data:image/jpeg;base64,${processedImage}`} alt="Después" />
                 </div>
                 <div className="slider-line" style={{ left: `${sliderPosition}%` }}>
                   <div className="slider-button">
@@ -552,39 +553,46 @@ const PhotoDemo = () => {
                 </button>
               </div>
               
-              {/* Oferta de Beta destacada después de ver el resultado */}
-              {!joinedBeta ? (
-                <div className="beta-conversion">
-                  <div className="beta-conversion-content">
-                    <h3>¿Te gustó el resultado?</h3>
-                    <p>Unite a nuestra beta exclusiva y obtén:</p>
-                    <ul>
-                      <li>✓ Acceso anticipado a la plataforma</li>
-                      <li>✓ Descuentos exclusivos al lanzamiento</li>
-                      <li>✓ Soporte personalizado</li>
-                      <li>✓ Nuevas funciones antes que nadie</li>
-                    </ul>
-                    <button 
-                      className="btn-primary btn-join-beta"
-                      onClick={handleJoinBeta}
-                      disabled={joiningBeta}
-                    >
-                      {joiningBeta ? 'Uniéndote...' : '🚀 Sí, quiero unirme a la Beta Gratis'}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="beta-success">
-                  <div className="success-message">
-                    <h3>✅ ¡Gracias por probarlo!</h3>
-                    <p>Por favor ayúdanos respondiendo estas breves preguntas:</p>
-                  </div>
-                </div>
-              )}
-              
               {/* Feedback */}
-              <div className="feedback-section">
-                <h4>¿Qué te pareció?</h4>
+              <div className="feedback-section">  
+                <h4>¡Ayúdanos mejorando con tu feedback!</h4>
+                
+                {/* Pregunta Beta integrada en el formulario */}
+                <div className="beta-question">
+                  <p>¿Te interesa unirte a nuestra beta exclusiva para acceso anticipado y descuentos especiales?</p>
+                  <div className="beta-buttons">
+                    <button
+                      className={`btn ${joinedBeta ? 'btn-secondary' : 'btn-primary'}`}
+                      onClick={() => {
+                        setBetaResponse('yes')
+                        handleJoinBeta()
+                      }}
+                      disabled={joiningBeta || joinedBeta}
+                    >
+                      {joiningBeta ? 'Uniéndote...' : joinedBeta ? '✅ ¡Ya estás en la Beta!' : '🚀 Sí, unirme a la Beta Gratis'}
+                    </button>
+                    {!joinedBeta && (
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => setBetaResponse('later')}
+                      >
+                        Tal vez más tarde
+                      </button>
+                    )}
+                  </div>
+                  {joinedBeta && (
+                    <div className="beta-benefits">
+                      <p><strong>¡Genial! Ahora tendrás:</strong></p>
+                      <ul>
+                        <li>✓ Acceso anticipado a la plataforma</li>
+                        <li>✓ Descuentos exclusivos al lanzamiento</li>
+                        <li>✓ Soporte personalizado</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <h4>¿Qué te pareció el resultado?</h4>
                 
                 <div className="feedback-buttons">
                   <button

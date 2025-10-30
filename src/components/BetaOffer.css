@@ -51,6 +51,31 @@
   margin: 0 auto;
 }
 
+.demo-cta-notice {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  margin: 1.5rem auto 0;
+  max-width: 600px;
+}
+
+.demo-cta-notice p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+}
+
+.demo-link {
+  color: var(--accent-green);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.demo-link:hover {
+  text-decoration: underline;
+}
+
 .beta-form {
   margin-bottom: 2.5rem;
 }

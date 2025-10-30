@@ -98,15 +98,18 @@ const BetaOffer = () => {
           className="beta-box"
         >
           <div className="beta-content">
-            <div className="beta-header">
-              <h2 className="beta-title">
-                Unite a la beta gratuita de PhotoBoost
-              </h2>
-              <p className="beta-subtitle">
-                Acceso anticipado a nuestra herramienta de IA para fotos inmobiliarias. Unite ahora y obtén descuentos exclusivos cuando lancemos.
-                Solo necesitamos algunos datos básicos para comenzar.
-              </p>
+          <div className="beta-header">
+            <h2 className="beta-title">
+              Unite a la beta gratuita de PhotoBoost
+            </h2>
+            <p className="beta-subtitle">
+              Acceso anticipado a nuestra herramienta de IA para fotos inmobiliarias. Unite ahora y obtén descuentos exclusivos cuando lancemos.
+              Solo necesitamos algunos datos básicos para comenzar.
+            </p>
+            <div className="demo-cta-notice">
+              <p>💡 <strong>¿Querés ver PhotoBoost en acción primero?</strong> <a href="#photo-demo" className="demo-link">Probá nuestra demo gratuita</a> arriba y experimentá cómo mejoramos tus fotos con IA.</p>
             </div>
+          </div>
 
             <SocialProof />
 

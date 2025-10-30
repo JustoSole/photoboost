@@ -932,10 +932,52 @@
   }
 }
 
+/* Processing indicator */
+.processing-indicator {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+}
+
+.processing-indicator .spinner {
+  margin: 0 auto 1rem;
+}
+
+.processing-indicator p {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 0.95rem;
+}
+
+/* Beta Question - usando estilos existentes */
+.beta-question {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.beta-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.beta-benefits {
+  background: var(--gray-50);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-top: 1rem;
+}
+
 /* High DPI / Retina displays optimization */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .btn-beta-cta,
-  .btn-beta-link {
+  .btn-beta-link,
+  .beta-btn {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
