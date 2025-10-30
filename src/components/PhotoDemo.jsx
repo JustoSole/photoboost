@@ -46,6 +46,16 @@ const PhotoDemo = () => {
   const [joinedBeta, setJoinedBeta] = useState(false)
   const [joiningBeta, setJoiningBeta] = useState(false)
   
+  // Estados para control de pruebas
+  const [trialCount, setTrialCount] = useState(0)
+  const [userDataEntered, setUserDataEntered] = useState(false)
+  const [savedUserData, setSavedUserData] = useState({
+    name: '',
+    email: '',
+    whatsapp: '',
+    empresa: ''
+  })
+  
   // Manejar selección de archivo
   const handleFileSelect = (e) => {
     const file = e.target.files[0]
@@ -97,18 +107,44 @@ const PhotoDemo = () => {
   
   // Procesar foto
   const handleProcessPhoto = async () => {
-    if (!name || !whatsapp || !originalImage) {
-      setErrorMessage('Por favor, completa tu nombre, WhatsApp y sube una foto')
+    // Verificar límite de pruebas
+    if (trialCount >= 3) {
+      setErrorMessage('Has alcanzado el límite de 3 pruebas gratuitas. ¡Únete a la beta para más!')
       return
     }
     
-    // Validar email si está presente
-    if (email && email.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(email)) {
-        setErrorMessage('Por favor, ingresa un email válido')
+    if (!originalImage) {
+      setErrorMessage('Por favor, sube una foto')
+      return
+    }
+    
+    // Usar datos guardados o datos actuales
+    const userData = userDataEntered ? savedUserData : {
+      name,
+      email,
+      whatsapp,
+      empresa
+    }
+    
+    // Si es la primera vez, validar datos
+    if (!userDataEntered) {
+      if (!userData.name || !userData.whatsapp) {
+        setErrorMessage('Por favor, completa tu nombre y WhatsApp')
         return
       }
+      
+      // Validar email si está presente
+      if (userData.email && userData.email.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userData.email)) {
+          setErrorMessage('Por favor, ingresa un email válido')
+          return
+        }
+      }
+      
+      // Guardar datos del usuario para futuras pruebas
+      setSavedUserData(userData)
+      setUserDataEntered(true)
     }
     
     setStatus('uploading')
@@ -124,115 +160,22 @@ const PhotoDemo = () => {
         ? originalImage 
         : `data:image/jpeg;base64,${originalImage}`
       
-      // Llamar a la API
-      // Usar URL relativa - cuando usas vercel dev, el mismo servidor maneja /api/*
-      const apiUrl = '/api/process-photo'
-      const fullUrl = window.location.origin + apiUrl
-      
-      console.log('🔄 [PhotoDemo] === INICIANDO REQUEST ===')
-      console.log('📍 Ubicación actual:', {
-        origin: window.location.origin,
-        hostname: window.location.hostname,
-        port: window.location.port || '(default 80/443)',
-        protocol: window.location.protocol,
-        href: window.location.href
-      })
-      console.log('🎯 Request URL:', {
-        relative: apiUrl,
-        absolute: fullUrl
-      })
-      console.log('📦 Payload size:', {
-        email: email.length,
-        imageLength: imageData.length,
-        imageSizeKB: Math.round(imageData.length / 1024)
-      })
-      
-      const requestStartTime = Date.now()
-      
-      let response
-      try {
-        response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+      const response = await fetch('/api/process-photo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          name,
-          whatsapp,
-          email: email || undefined,
-          empresa: empresa || undefined,
+          name: userData.name,
+          whatsapp: userData.whatsapp,
+          email: userData.email || undefined,
+          empresa: userData.empresa || undefined,
           image: imageData
         })
-        })
-        
-        const requestDuration = Date.now() - requestStartTime
-        console.log('📡 [PhotoDemo] === RESPONSE RECIBIDO ===')
-        console.log('⏱️  Duración:', requestDuration + 'ms')
-        console.log('📊 Status:', {
-          ok: response.ok,
-          status: response.status,
-          statusText: response.statusText,
-          type: response.type
-        })
-        console.log('🔗 URLs:', {
-          originalUrl: apiUrl,
-          responseUrl: response.url,
-          redirected: response.redirected
-        })
-        console.log('📋 Headers:', {
-          contentType: response.headers.get('content-type'),
-          contentLength: response.headers.get('content-length')
-        })
-        
-      } catch (fetchError) {
-        console.error('❌ [PhotoDemo] === ERROR EN FETCH ===')
-        console.error('🚨 Tipo de error:', fetchError.name)
-        console.error('📝 Mensaje:', fetchError.message)
-        console.error('🔗 URL intentada:', fullUrl)
-        console.error('💡 Posibles causas:')
-        console.error('   1. El servidor no está corriendo en este puerto')
-        console.error('   2. La ruta /api/process-photo no existe')
-        console.error('   3. Error de CORS')
-        console.error('   4. Error de red')
-        throw fetchError
-      }
+      })
       
-      // Mejor manejo de errores para debug
       if (!response.ok) {
-        console.error('❌ [PhotoDemo] === ERROR EN RESPONSE ===')
-        console.error('📊 Status:', response.status, response.statusText)
-        console.error('🔗 URL de respuesta:', response.url)
-        
-        let errorMessage = 'Error al procesar la foto'
-        let errorDetails = null
-        
-        try {
-          const responseText = await response.clone().text()
-          console.error('📄 Response body (raw):', responseText.substring(0, 500))
-          
-          errorDetails = JSON.parse(responseText)
-          errorMessage = errorDetails.error || `Error ${response.status}: ${response.statusText}`
-          console.error('📦 Error details:', errorDetails)
-        } catch (e) {
-          console.error('⚠️  No se pudo parsear el error como JSON:', e.message)
-          const responseText = await response.text()
-          console.error('📄 Response body (text):', responseText.substring(0, 500))
-          errorMessage = `Error ${response.status}: ${response.statusText || 'Sin respuesta del servidor'}`
-        }
-        
-        // Diagnóstico específico por código de error
-        if (response.status === 404) {
-          console.error('💡 Diagnóstico 404:')
-          console.error('   1. Verifica que estés usando el puerto correcto (vercel dev muestra el puerto)')
-          console.error('   2. Verifica que la ruta /api/process-photo exista')
-          console.error('   3. Verifica que vercel dev esté corriendo')
-          console.error('   4. Intenta acceder directamente a:', fullUrl)
-          errorMessage = `404: No se encontró el endpoint. Verifica que estés usando el puerto correcto de vercel dev. URL intentada: ${fullUrl}`
-        } else if (response.status === 500) {
-          console.error('💡 Error 500: Revisa los logs del servidor (terminal donde corre vercel dev)')
-        }
-        
-        throw new Error(errorMessage)
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
       }
       
       const data = await response.json()
@@ -246,6 +189,9 @@ const PhotoDemo = () => {
       setProcessedImage(data.processedImage)
       setStatus('completed')
       
+      // Incrementar contador de pruebas
+      setTrialCount(prev => prev + 1)
+      
       // Trackear procesamiento exitoso
       const processingTime = Math.round((Date.now() - processStartTime) / 1000)
       trackPhotoProcessComplete(processingTime)
@@ -257,27 +203,53 @@ const PhotoDemo = () => {
       setErrorMessage(errorMessage)
       
       // Trackear error de procesamiento
-      trackPhotoProcessError(error.message || 'unknown_error')
+      trackPhotoProcessError(error.message)
     }
   }
   
-  // Manejar slider
-  const handleMove = (clientX) => {
-    if (!sliderRef.current) return
-    const rect = sliderRef.current.getBoundingClientRect()
-    const x = clientX - rect.left
-    const percentage = (x / rect.width) * 100
-    const newPosition = Math.max(0, Math.min(100, percentage))
-    setSliderPosition(newPosition)
+  // Descargar foto procesada
+  const handleDownload = () => {
+    if (!processedImage) return
+    
+    // Trackear descarga
+    trackPhotoDownload()
+    
+    const link = document.createElement('a')
+    link.href = `data:image/jpeg;base64,${processedImage}`
+    link.download = 'foto-mejorada-photoboost.jpg'
+    link.click()
   }
   
-  const handleMouseMove = (e) => {
-    if (isDragging) handleMove(e.clientX)
-  }
-  
-  const handleTouchMove = (e) => {
-    if (isDragging && e.touches.length > 0) {
-      handleMove(e.touches[0].clientX)
+  // Resetear para nueva foto
+  const handleReset = () => {
+    // Trackear intento de probar otra foto
+    trackTryAnotherPhoto()
+    
+    setOriginalImage(null)
+    setProcessedImage(null)
+    setImagePreview(null)
+    setStatus('idle')
+    setRecordId(null)
+    setErrorMessage('')
+    setSliderPosition(50)
+    setLeGusto('')
+    setPagaria('')
+    setWtp('')
+    setComentario('')
+    setFeedbackStatus('idle')
+    setJoinedBeta(false)
+    setJoiningBeta(false)
+    
+    // Solo resetear datos del usuario si no han sido guardados
+    if (!userDataEntered) {
+      setName('')
+      setEmail('')
+      setWhatsapp('')
+      setEmpresa('')
+    }
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
   
@@ -311,7 +283,7 @@ const PhotoDemo = () => {
       trackJoinBetaFromDemo()
       
     } catch (error) {
-      console.error('Error uniéndose a la beta:', error)
+      console.error('Error uniéndose a beta:', error)
       alert('Error al unirse a la beta. Por favor, intenta nuevamente.')
     } finally {
       setJoiningBeta(false)
@@ -364,111 +336,89 @@ const PhotoDemo = () => {
     }
   }
   
-  // Descargar foto procesada
-  const handleDownload = () => {
-    if (!processedImage) return
-    
-    // Trackear descarga
-    trackPhotoDownload()
-    
-    const link = document.createElement('a')
-    link.href = `data:image/jpeg;base64,${processedImage}`
-    link.download = 'foto-mejorada-photoboost.jpg'
-    link.click()
-  }
-  
-  // Resetear para nueva foto
-  const handleReset = () => {
-    // Trackear intento de probar otra foto
-    trackTryAnotherPhoto()
-    
-    setOriginalImage(null)
-    setProcessedImage(null)
-    setImagePreview(null)
-    setStatus('idle')
-    setRecordId(null)
-    setErrorMessage('')
-    setSliderPosition(50)
-    setLeGusto('')
-    setPagaria('')
-    setWtp('')
-    setComentario('')
-    setFeedbackStatus('idle')
-    setJoinedBeta(false)
-    setJoiningBeta(false)
-    setName('')
-    setEmail('')
-    setWhatsapp('')
-    setEmpresa('')
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }
-  
   return (
     <section className="photo-demo" id="photo-demo">
       <div className="container">
         <div className="photo-demo-content">
-          <h2 className="photo-demo-title">Prueba Gratis con Tu Foto</h2>
+          <h2 className="photo-demo-title">
+            {userDataEntered ? `Prueba otra foto (${3 - trialCount} restantes)` : 'Prueba Gratis con Tu Foto'}
+          </h2>
           <p className="photo-demo-subtitle">
-            Sube una foto de tu propiedad y descubre cómo la mejoramos con IA
+            {userDataEntered 
+              ? `Hola ${savedUserData.name}, sube otra foto y descubre cómo la mejoramos con IA`
+              : 'Sube una foto de tu propiedad y descubre cómo la mejoramos con IA'
+            }
           </p>
           
+          {trialCount >= 3 && (
+            <div className="trial-limit-message">
+              <p>¡Has alcanzado el límite de 3 pruebas gratuitas!</p>
+              <p>Únete a nuestra beta para procesar fotos ilimitadas:</p>
+              <a href="#beta" className="btn-primary">
+                🚀 Unirme a la Beta Gratis
+              </a>
+            </div>
+          )}
+          
           {/* Formulario de información */}
-          {status === 'idle' && (
+          {status === 'idle' && trialCount < 3 && (
             <motion.div 
               className="demo-form"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="form-group">
-                <label htmlFor="name">Nombre completo *</label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Juan Pérez"
-                  required
-                />
-              </div>
+              {!userDataEntered && (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="name">Nombre completo *</label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Juan Pérez"
+                      required
+                    />
+                  </div>
 
-              <div className="form-group">
-                <label htmlFor="whatsapp">WhatsApp *</label>
-                <input
-                  type="tel"
-                  id="whatsapp"
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                  placeholder="+54 9 11 1234-5678"
-                  required
-                />
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="email">Email (opcional)</label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="empresa">Empresa (opcional)</label>
-                  <input
-                    type="text"
-                    id="empresa"
-                    value={empresa}
-                    onChange={(e) => setEmpresa(e.target.value)}
-                    placeholder="Nombre de tu empresa"
-                  />
-                </div>
-              </div>
+                  <div className="form-group">
+                    <label htmlFor="whatsapp">WhatsApp *</label>
+                    <input
+                      type="tel"
+                      id="whatsapp"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      placeholder="+54 9 11 1234-5678"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="email">Email (opcional)</label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="tu@email.com"
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="empresa">Empresa (opcional)</label>
+                      <input
+                        type="text"
+                        id="empresa"
+                        value={empresa}
+                        onChange={(e) => setEmpresa(e.target.value)}
+                        placeholder="Nombre de tu empresa"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
               
               {/* Upload de foto */}
               <div className="upload-area">
@@ -521,15 +471,15 @@ const PhotoDemo = () => {
               <button
                 className="btn-primary btn-process"
                 onClick={handleProcessPhoto}
-                disabled={!name || !whatsapp || !originalImage || status === 'uploading' || status === 'processing'}
+                disabled={!originalImage || status === 'uploading'}
               >
-                {status === 'uploading' || status === 'processing' ? 'Procesando...' : 'Mejorar con IA'}
+                {status === 'uploading' ? 'Procesando...' : '✨ Mejorar con IA'}
               </button>
             </motion.div>
           )}
-          
+
           {/* Estado de procesamiento */}
-          {(status === 'uploading' || status === 'processing') && (
+          {status === 'processing' && (
             <motion.div 
               className="processing-state"
               initial={{ opacity: 0 }}
@@ -540,7 +490,7 @@ const PhotoDemo = () => {
               <p>Esto puede tomar 10-20 segundos. ¡Estamos mejorando tu foto!</p>
             </motion.div>
           )}
-          
+
           {/* Error */}
           {status === 'error' && (
             <motion.div 
@@ -551,18 +501,19 @@ const PhotoDemo = () => {
               <div className="error-icon">⚠️</div>
               <h3>Error al procesar</h3>
               <p>{errorMessage}</p>
-              <button className="btn-primary" onClick={handleReset}>
+              <button className="btn-secondary" onClick={() => setStatus('idle')}>
                 Intentar Nuevamente
               </button>
             </motion.div>
           )}
-          
+
           {/* Resultado */}
           {status === 'completed' && originalImage && processedImage && (
             <motion.div 
-              className="result-section"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              className="result-state"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
               <div className="result-header">
                 <h3>¡Tu foto está lista!</h3>
@@ -579,7 +530,7 @@ const PhotoDemo = () => {
                 </div>
                 <div className="slider-line" style={{ left: `${sliderPosition}%` }}>
                   <div className="slider-button">
-                    <div className="slider-arrows">⟷</div>
+                    <div className="slider-arrows">↔</div>
                   </div>
                 </div>
                 <input
@@ -589,12 +540,6 @@ const PhotoDemo = () => {
                   value={sliderPosition}
                   onChange={(e) => setSliderPosition(e.target.value)}
                   className="slider-input"
-                  onMouseDown={() => setIsDragging(true)}
-                  onMouseUp={() => setIsDragging(false)}
-                  onMouseMove={handleMouseMove}
-                  onTouchStart={() => setIsDragging(true)}
-                  onTouchEnd={() => setIsDragging(false)}
-                  onTouchMove={handleTouchMove}
                 />
               </div>
               
@@ -631,9 +576,8 @@ const PhotoDemo = () => {
               ) : (
                 <div className="beta-success">
                   <div className="success-message">
-                    <h3>🎉 ¡Bienvenido a la Beta!</h3>
-                    <p>Te hemos agregado a nuestra lista exclusiva. Pronto recibirás un email con los próximos pasos.</p>
-                    <p><strong>Mientras tanto, puedes seguir probando más fotos.</strong></p>
+                    <h3>✅ ¡Gracias por probarlo!</h3>
+                    <p>Por favor ayúdanos respondiendo estas breves preguntas:</p>
                   </div>
                 </div>
               )}
@@ -672,6 +616,7 @@ const PhotoDemo = () => {
                   </button>
                 </div>
                 
+                {/* Solo mostrar estas preguntas si le gustó el resultado */}
                 {(leGusto === '😍 Me encantó' || leGusto === '👍 Está bien') && (
                   <div className="wtp-section">
                     <p className="wtp-question">¿Usarías esto para tus propiedades?</p>
@@ -763,12 +708,27 @@ const PhotoDemo = () => {
                       : 'Enviar Comentario'}
                   </button>
                   
-                  {feedbackStatus === 'saved' && (
+                  {feedbackStatus === 'saved' && !joinedBeta && (
                     <div className="post-feedback-message">
                       <p>¿Te gustó el resultado? ¡Unite a nuestra beta exclusiva!</p>
                       <a href="#beta" className="btn-secondary btn-beta-cta">
                         🚀 Ver Más Opciones Beta
                       </a>
+                    </div>
+                  )}
+                  
+                  {feedbackStatus === 'saved' && joinedBeta && (
+                    <div className="post-feedback-message">
+                      <p>¡Gracias por el feedback! Ya estás en nuestra beta.</p>
+                      <p>Pronto nos contactaremos contigo. Cualquier consulta:</p>
+                      <div className="contact-info">
+                        <a href="https://wa.me/5491154854321" target="_blank" rel="noopener noreferrer" className="contact-link">
+                          💬 WhatsApp
+                        </a>
+                        <a href="mailto:hello@photoboost.ai" className="contact-link">
+                          📧 Email
+                        </a>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -782,4 +742,3 @@ const PhotoDemo = () => {
 }
 
 export default PhotoDemo
-

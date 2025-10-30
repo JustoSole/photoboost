@@ -634,6 +634,97 @@
   box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
+/* Beta Success Message */
+.beta-success {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--accent-green-light);
+  border: 2px solid var(--accent-green);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.success-message h3 {
+  color: var(--accent-green);
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.success-message p {
+  color: var(--gray-700);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Trial Limit Message */
+.trial-limit-message {
+  margin: 2rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+  border: 2px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.trial-limit-message p {
+  color: #92400e;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.trial-limit-message p:last-of-type {
+  margin-bottom: 1.5rem;
+}
+
+.trial-limit-message .btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.trial-limit-message .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Contact Info Styles */
+.contact-info {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--white);
+  border: 2px solid var(--accent-green);
+  border-radius: var(--radius-md);
+  color: var(--accent-green);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.contact-link:hover {
+  background: var(--accent-green);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .photo-demo {
