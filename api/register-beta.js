@@ -28,13 +28,13 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
     emailToUse = `${namePart}_${phonePart}@placeholder.local`;
   }
   
+  // No establecer Estado - los valores válidos son: procesando, completado, error, contactado
+  // Para registros de beta, dejamos que Airtable use su valor por defecto
   const fields = {
     Nombre: name.trim(),
     Email: emailToUse,
     WhatsApp: whatsapp.trim(), 
     Beta: beta
-    // No establecer Estado aquí - los valores válidos son: procesando, completado, error, contactado
-    // Para registros de beta, dejamos que Airtable use su valor por defecto o lo marcamos manualmente después
   };
   
   // Agregar campos opcionales solo si están presentes
