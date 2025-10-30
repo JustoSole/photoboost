@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   trackPhotoUpload, 
@@ -49,14 +49,8 @@ const PhotoDemo = () => {
   const [joiningBeta, setJoiningBeta] = useState(false)
   const [betaResponse, setBetaResponse] = useState(null) // null, 'yes', 'later'
   
-  // Estados para control de pruebas
+  // Estados para control de pruebas - SIMPLIFICADO
   const [trialCount, setTrialCount] = useState(0)
-  const [userDataEntered, setUserDataEntered] = useState(false)
-  const [savedUserData, setSavedUserData] = useState({
-    name: '',
-    email: '',
-    whatsapp: ''
-  })
   
   // Manejar selección de archivo
   const handleFileSelect = (e) => {
@@ -161,32 +155,19 @@ const PhotoDemo = () => {
       return
     }
     
-    // Usar datos guardados o datos actuales
-    const userData = userDataEntered ? savedUserData : {
-      name,
-      email,
-      whatsapp
+    // Validar datos requeridos
+    if (!name || !whatsapp) {
+      setErrorMessage('Por favor, completa tu nombre y WhatsApp')
+      return
     }
     
-    // Si es la primera vez, validar datos
-    if (!userDataEntered) {
-      if (!userData.name || !userData.whatsapp) {
-        setErrorMessage('Por favor, completa tu nombre y WhatsApp')
+    // Validar email si está presente
+    if (email && email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setErrorMessage('Por favor, ingresa un email válido')
         return
       }
-      
-      // Validar email si está presente
-      if (userData.email && userData.email.trim()) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(userData.email)) {
-          setErrorMessage('Por favor, ingresa un email válido')
-          return
-        }
-      }
-      
-      // Guardar datos del usuario para futuras pruebas
-      setSavedUserData(userData)
-      setUserDataEntered(true)
     }
     
     setStatus('uploading')
@@ -218,11 +199,11 @@ const PhotoDemo = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: userData.name,
-          whatsapp: userData.whatsapp,
-          email: userData.email || undefined,
+          name: name,
+          whatsapp: whatsapp,
+          email: email || undefined,
           image: imageData,
-          wtp: precio10Imagenes || undefined
+          precio10Imagenes: precio10Imagenes || undefined
         })
       })
       
@@ -309,13 +290,6 @@ const PhotoDemo = () => {
     setJoinedBeta(false)
     setJoiningBeta(false)
     setBetaResponse(null)
-    
-    // Solo resetear datos del usuario si no han sido guardados
-    if (!userDataEntered) {
-      setName('')
-      setEmail('')
-      setWhatsapp('')
-    }
     
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -410,32 +384,25 @@ const PhotoDemo = () => {
       <div className="container">
         <div className="photo-demo-content">
           <h2 className="photo-demo-title">
-            {userDataEntered ? (
-              <>
-                Prueba otra foto 
-                <span style={{
-                  display: 'inline-block',
-                  background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-                  color: 'white',
-                  padding: '0.25rem 0.75rem',
-                  borderRadius: '20px',
-                  fontSize: '0.8em',
-                  fontWeight: '600',
-                  marginLeft: '0.5rem',
-                  verticalAlign: 'middle'
-                }}>
-                  {3 - trialCount} restantes
-                </span>
-              </>
-            ) : (
-              'Prueba Gratis con Tu Foto'
+            Prueba Gratis con Tu Foto
+            {trialCount > 0 && (
+              <span style={{
+                display: 'inline-block',
+                background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                color: 'white',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '20px',
+                fontSize: '0.8em',
+                fontWeight: '600',
+                marginLeft: '0.5rem',
+                verticalAlign: 'middle'
+              }}>
+                {3 - trialCount} restantes
+              </span>
             )}
           </h2>
           <p className="photo-demo-subtitle">
-            {userDataEntered 
-              ? `Hola ${savedUserData.name}, sube otra foto y descubre cómo la mejoramos con IA`
-              : 'Sube una foto de tu propiedad y descubre cómo la mejoramos con IA'
-            }
+            Sube una foto de tu propiedad y descubre cómo la mejoramos con IA
           </p>
           
           {trialCount >= 3 && (
@@ -456,46 +423,42 @@ const PhotoDemo = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {!userDataEntered && (
-                <>
-                  <div className="form-group">
-                    <label htmlFor="name">Nombre completo *</label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Juan Pérez"
-                      required
-                    />
-                  </div>
+              <div className="form-group">
+                <label htmlFor="name">Nombre completo *</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Juan Pérez"
+                  required
+                />
+              </div>
 
-                  <div className="form-group">
-                    <label htmlFor="whatsapp">WhatsApp *</label>
-                    <input
-                      type="tel"
-                      id="whatsapp"
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
-                      placeholder="+54 9 11 1234-5678"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="email">Email (opcional)</label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="tu@email.com"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
+              <div className="form-group">
+                <label htmlFor="whatsapp">WhatsApp *</label>
+                <input
+                  type="tel"
+                  id="whatsapp"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  placeholder="+54 9 11 1234-5678"
+                  required
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="email">Email (opcional)</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="tu@email.com"
+                  />
+                </div>
+              </div>
               
               {/* Upload de foto */}
               <div className="upload-area">
