@@ -17,21 +17,33 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
   const url = `${AIRTABLE_API_URL}/${baseId}/${tableName}`;
   
   // Email es el campo principal en Airtable
-  // Si no hay email, usar un placeholder con el nombre
-  const emailToUse = (email && email.trim()) 
-    ? email.trim() 
-    : `${name.trim().replace(/\s+/g, '_').toLowerCase()}@placeholder.local`;
+  // Si no hay email, usar un placeholder único con el nombre y WhatsApp
+  let emailToUse;
+  if (email && email.trim()) {
+    emailToUse = email.trim();
+  } else {
+    // Generar email placeholder único usando nombre y WhatsApp
+    const namePart = name.trim().replace(/\s+/g, '_').toLowerCase().substring(0, 30);
+    const phonePart = whatsapp.trim().replace(/\D/g, '').substring(0, 8) || 'no_phone';
+    emailToUse = `${namePart}_${phonePart}@placeholder.local`;
+  }
   
   const fields = {
     Nombre: name.trim(),
     Email: emailToUse,
     WhatsApp: whatsapp.trim(), 
-    Estado: 'beta_registrado',
     Beta: beta
+    // No establecer Estado aquí - los valores válidos son: procesando, completado, error, contactado
+    // Para registros de beta, dejamos que Airtable use su valor por defecto o lo marcamos manualmente después
   };
   
   // Agregar campos opcionales solo si están presentes
   if (empresa && empresa.trim()) fields.Empresa = empresa.trim();
+  
+  console.log('📤 [createBetaRecord] Enviando a Airtable:', {
+    url: url.replace(baseId, '[BASE_ID]'),
+    fields: { ...fields, Email: emailToUse.substring(0, 30) + '...' } // Log parcial del email
+  });
   
   const response = await fetch(url, {
     method: 'POST',
@@ -43,11 +55,32 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
   });
   
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Airtable error: ${error.error?.message || 'Unknown error'}`);
+    let errorMessage = 'Unknown error';
+    let errorDetails = null;
+    
+    try {
+      const errorData = await response.json();
+      errorDetails = errorData;
+      errorMessage = errorData.error?.message || errorData.error?.type || JSON.stringify(errorData);
+      
+      console.error(`❌ [createBetaRecord] Error de Airtable:`, {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData,
+        fieldsAttempted: Object.keys(fields)
+      });
+    } catch (parseError) {
+      const errorText = await response.text();
+      errorMessage = `HTTP ${response.status}: ${errorText || response.statusText}`;
+      console.error(`❌ [createBetaRecord] Error sin JSON:`, errorMessage);
+    }
+    
+    throw new Error(`Airtable error: ${errorMessage}`);
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log(`✅ [createBetaRecord] Registro creado exitosamente: ${result.id}`);
+  return result;
 }
 
 export default async function handler(req, res) {

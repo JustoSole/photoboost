@@ -9,6 +9,7 @@ const BetaOffer = () => {
   const [ref, isInView] = useInView({ threshold: 0.2 })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState(null)
+  const [errorMessage, setErrorMessage] = useState('')
   const [showThankYouModal, setShowThankYouModal] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -38,11 +39,34 @@ const BetaOffer = () => {
         })
       })
 
-      const result = await response.json()
-      return result.success
+      // Intentar parsear la respuesta como JSON
+      let result;
+      try {
+        result = await response.json()
+      } catch (jsonError) {
+        // Si falla el parseo JSON (raro), lanzar error genérico
+        console.error('Error parseando respuesta JSON:', jsonError)
+        throw new Error(`Error del servidor (${response.status}): ${response.statusText}`)
+      }
+      
+      if (!response.ok) {
+        console.error('Error en respuesta del servidor:', {
+          status: response.status,
+          error: result.error || result
+        })
+        const errorMsg = result.error || result.message || `Error del servidor (${response.status})`
+        throw new Error(errorMsg)
+      }
+      
+      if (result.success !== true) {
+        throw new Error(result.error || 'No se pudo completar el registro')
+      }
+      
+      return true
     } catch (error) {
       console.error('Error enviando a Airtable:', error)
-      return false
+      // Re-lanzar el error para que handleSubmit pueda manejarlo
+      throw error
     }
   }
 
@@ -50,14 +74,11 @@ const BetaOffer = () => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus(null)
+    setErrorMessage('')
     
     try {
       // Enviar a Airtable
-      const success = await sendToAirtable()
-      
-      if (!success) {
-        throw new Error('Error al registrar en la beta')
-      }
+      await sendToAirtable()
       
       // Enviar evento a Google Analytics
       trackFormSubmission({
@@ -66,6 +87,7 @@ const BetaOffer = () => {
       
       setShowThankYouModal(true)
       setSubmitStatus('success')
+      setErrorMessage('')
       
       // Limpiar formulario después de enviar
       setTimeout(() => {
@@ -79,7 +101,9 @@ const BetaOffer = () => {
       }, 4000)
       
     } catch (error) {
+      console.error('Error en handleSubmit:', error)
       setSubmitStatus('error')
+      setErrorMessage(error.message || 'Hubo un problema al registrar. Por favor intentá nuevamente.')
     } finally {
       setIsSubmitting(false)
     }
@@ -162,7 +186,7 @@ const BetaOffer = () => {
 
               {submitStatus === 'error' && (
                 <p className="form-error">
-                  Hubo un problema. Intentá nuevamente.
+                  {errorMessage || 'Hubo un problema. Intentá nuevamente.'}
                 </p>
               )}
 
