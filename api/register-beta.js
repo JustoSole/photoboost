@@ -23,10 +23,10 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
     : `${name.trim().replace(/\s+/g, '_').toLowerCase()}@placeholder.local`;
   
   const fields = {
-    Nombre: name.trim(), // Campo nombre agregado
-    Email: emailToUse, // Email es el campo principal
+    Nombre: name.trim(),
+    Email: emailToUse,
     WhatsApp: whatsapp.trim(), 
-    Estado: 'beta_registrado', // Estado específico para registro directo
+    Estado: 'beta_registrado',
     Beta: beta
   };
   
@@ -51,27 +51,6 @@ async function createBetaRecord(name, email, whatsapp, empresa, beta = true) {
 }
 
 export default async function handler(req, res) {
-  // Cargar variables de entorno en desarrollo local (si no están disponibles)
-  if (process.env.NODE_ENV !== 'production' && !process.env.AIRTABLE_API_KEY) {
-    try {
-      const dotenv = await import('dotenv');
-      const { fileURLToPath } = await import('url');
-      const { dirname, join } = await import('path');
-      const { existsSync } = await import('fs');
-      
-      const __filename = fileURLToPath(import.meta.url);
-      const __dirname = dirname(__filename);
-      const envPath = join(__dirname, '..', '.env.local');
-      
-      if (existsSync(envPath)) {
-        dotenv.config({ path: envPath });
-        console.log('📝 [register-beta] Variables cargadas desde .env.local');
-      }
-    } catch (e) {
-      console.log('⚠️ [register-beta] No se pudieron cargar variables desde .env.local:', e.message);
-    }
-  }
-  
   // Logging inicial para debugging
   console.log('🟢 [register-beta] ===== REGISTRO BETA =====');
   console.log('📥 Request recibido:', {
