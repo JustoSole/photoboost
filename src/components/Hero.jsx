@@ -151,7 +151,7 @@ const Hero = () => {
   }
 
   const handleCTAClick = () => {
-    trackCTAClick('Aplicar a la beta gratuita', 'hero_section')
+    trackCTAClick('Probar ahora gratis', 'hero_section')
   }
 
   const currentExample = examples[currentIndex]
@@ -264,10 +264,10 @@ const Hero = () => {
           transition={{ duration: 0.4, delay: 0.4 }}
           className="hero-cta"
         >
-          <a href="#beta" className="btn btn-primary btn-large" onClick={handleCTAClick}>
-            Aplicar a la beta gratuita →
+          <a href="#photo-demo" className="btn btn-primary btn-large" onClick={handleCTAClick}>
+            Probar ahora gratis →
           </a>
-          <p className="cta-subtext">Sin tarjeta. Sin compromiso. Cupos limitados.</p>
+          <p className="cta-subtext">Sin tarjeta. Sin compromiso. 10 fotos gratis.</p>
         </motion.div>
       </div>
     </section>

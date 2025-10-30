@@ -114,11 +114,11 @@ const Pricing = () => {
               </ul>
 
               <a 
-                href="#beta" 
+                href="#photo-demo" 
                 className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'} btn-block`}
                 onClick={() => handlePlanClick(plan.name, plan.price)}
               >
-                {plan.cta}
+                Probar gratis
               </a>
             </motion.div>
           ))}

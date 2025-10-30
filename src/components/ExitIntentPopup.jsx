@@ -97,11 +97,11 @@ const ExitIntentPopup = () => {
               </p>
               
               <a 
-                href="#beta" 
+                href="#photo-demo" 
                 className="btn btn-primary btn-large btn-block"
                 onClick={handleCTAClick}
               >
-                Probá gratis ahora →
+                Probar ahora gratis →
               </a>
               
               <p className="exit-popup-disclaimer">

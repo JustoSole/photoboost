@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:vercel": "vercel dev",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "check-setup": "node scripts/check-setup.js",
-    "process-images": "node scripts/process-images.js"
+    "process-images": "node scripts/process-images.js",
+    "test-airtable": "node scripts/test-airtable.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

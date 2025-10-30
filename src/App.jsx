@@ -6,6 +6,7 @@ import HowItWorks from './components/HowItWorks'
 import SalesBoost from './components/SalesBoost'
 import Testimonials from './components/Testimonials'
 import BetaOffer from './components/BetaOffer'
+import PhotoDemo from './components/PhotoDemo'
 import Footer from './components/Footer'
 import MobileCTA from './components/MobileCTA'
 import { initializeAutoTracking } from './utils/analytics'
@@ -26,6 +27,7 @@ function App() {
       <Hero />
       <PainSection />
       <HowItWorks />
+      <PhotoDemo />
       <SalesBoost />
       <Testimonials />
       <BetaOffer />

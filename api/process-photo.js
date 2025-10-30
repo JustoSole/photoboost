@@ -90,7 +90,7 @@ function getBestAspectRatio(width, height) {
 /**
  * Crear registro en Airtable
  */
-async function createAirtableRecord(email, whatsapp, empresa, fotoOriginalURL) {
+async function createAirtableRecord(whatsapp, email, empresa, fotoOriginalURL) {
   const baseId = process.env.AIRTABLE_BASE_ID;
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'Demos';
   const apiKey = process.env.AIRTABLE_API_KEY;
@@ -98,11 +98,11 @@ async function createAirtableRecord(email, whatsapp, empresa, fotoOriginalURL) {
   const url = `${AIRTABLE_API_URL}/${baseId}/${tableName}`;
   
   const fields = {
-    Email: email,
+    WhatsApp: whatsapp,
     Estado: 'procesando'
   };
   
-  if (whatsapp) fields.WhatsApp = whatsapp;
+  if (email) fields.Email = email;
   if (empresa) fields.Empresa = empresa;
   if (fotoOriginalURL) fields.Foto_Original_URL = fotoOriginalURL;
   
@@ -359,29 +359,31 @@ export default async function handler(req, res) {
     }
     
     // Extraer datos del request
-    const { email, whatsapp, empresa, image } = req.body;
+    const { whatsapp, email, empresa, image } = req.body;
     
     console.log('📦 [process-photo] Datos recibidos:', {
-      hasEmail: !!email,
       hasWhatsapp: !!whatsapp,
+      hasEmail: !!email,
       hasEmpresa: !!empresa,
       hasImage: !!image,
       imageLength: image ? image.length : 0
     });
     
     // Validar datos requeridos
-    if (!email || !image) {
-      console.log('❌ [process-photo] Datos faltantes:', { email: !email, image: !image });
+    if (!whatsapp || !image) {
+      console.log('❌ [process-photo] Datos faltantes:', { whatsapp: !whatsapp, image: !image });
       return res.status(400).json({ 
-        error: 'Email e imagen son requeridos',
-        required: { email: !email ? 'requerido' : 'ok', image: !image ? 'requerido' : 'ok' }
+        error: 'WhatsApp e imagen son requeridos',
+        required: { whatsapp: !whatsapp ? 'requerido' : 'ok', image: !image ? 'requerido' : 'ok' }
       });
     }
     
-    // Validar formato de email básico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Email inválido' });
+    // Validar formato de email si está presente
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Email inválido' });
+      }
     }
     
     // La imagen viene en base64, extraer data si viene con prefijo data:image/...
@@ -410,7 +412,7 @@ export default async function handler(req, res) {
     
     // PASO 1: Crear registro en Airtable con estado "procesando"
     console.log('📝 Creando registro en Airtable...');
-    const airtableRecord = await createAirtableRecord(email, whatsapp, empresa, fotoOriginalURL);
+    const airtableRecord = await createAirtableRecord(whatsapp, email, empresa, fotoOriginalURL);
     recordId = airtableRecord.id;
     
     console.log(`✅ Registro creado: ${recordId}`);

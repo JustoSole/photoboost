@@ -268,7 +268,7 @@ const VisualResults = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="cta"
         >
-          <a href="#beta" className="btn btn-primary">
+          <a href="#photo-demo" className="btn btn-primary">
             Probar ahora gratis
           </a>
         </motion.div>

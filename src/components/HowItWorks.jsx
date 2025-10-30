@@ -57,7 +57,7 @@ const HowItWorks = () => {
           <p className="subtext">
             Resultados uniformes, profesionales y con tono coherente en toda la propiedad.
           </p>
-          <a href="#beta" className="btn btn-primary">
+          <a href="#photo-demo" className="btn btn-primary">
             Probar ahora gratis
           </a>
         </motion.div>

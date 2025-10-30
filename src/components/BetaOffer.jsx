@@ -13,12 +13,7 @@ const BetaOffer = () => {
     name: '',
     email: '',
     phone: '',
-    companyName: '',
-    businessSize: '',
-    monthlyPhotos: '',
-    currentProcess: '',
-    mainChallenge: '',
-    pricePerPhoto: ''
+    companyName: ''
   })
 
   const handleInputChange = (e) => {
@@ -28,30 +23,26 @@ const BetaOffer = () => {
     })
   }
 
-  const sendToWeb3Forms = async () => {
+  const sendToAirtable = async () => {
     try {
-      const formDataToSend = new FormData()
-      formDataToSend.append('access_key', 'ee498ab6-6dec-43c0-b16b-a425c50b8602')
-      formDataToSend.append('name', formData.name)
-      formDataToSend.append('email', formData.email)
-      formDataToSend.append('phone', formData.phone)
-      formDataToSend.append('companyName', formData.companyName)
-      formDataToSend.append('businessSize', formData.businessSize)
-      formDataToSend.append('monthlyPhotos', formData.monthlyPhotos)
-      formDataToSend.append('currentProcess', formData.currentProcess)
-      formDataToSend.append('mainChallenge', formData.mainChallenge)
-      formDataToSend.append('pricePerPhoto', formData.pricePerPhoto)
-      formDataToSend.append('timestamp', new Date().toISOString())
-
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const response = await fetch('/api/register-beta', {
         method: 'POST',
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          whatsapp: formData.phone,
+          empresa: formData.companyName,
+          beta: true // Registro directo a beta
+        })
       })
 
       const result = await response.json()
       return result.success
     } catch (error) {
-      console.error('Error enviando a Web3Forms:', error)
+      console.error('Error enviando a Airtable:', error)
       return false
     }
   }
@@ -62,13 +53,16 @@ const BetaOffer = () => {
     setSubmitStatus(null)
     
     try {
-      // Enviar a Web3Forms
-      await sendToWeb3Forms()
+      // Enviar a Airtable
+      const success = await sendToAirtable()
+      
+      if (!success) {
+        throw new Error('Error al registrar en la beta')
+      }
       
       // Enviar evento a Google Analytics
       trackFormSubmission({
-        businessSize: formData.businessSize,
-        monthlyPhotos: formData.monthlyPhotos
+        source: 'direct_beta_registration'
       })
       
       setShowThankYouModal(true)
@@ -80,12 +74,7 @@ const BetaOffer = () => {
           name: '',
           email: '',
           phone: '',
-          companyName: '',
-          businessSize: '',
-          monthlyPhotos: '',
-          currentProcess: '',
-          mainChallenge: '',
-          pricePerPhoto: ''
+          companyName: ''
         })
         setSubmitStatus(null)
         setShowThankYouModal(false)
@@ -110,19 +99,19 @@ const BetaOffer = () => {
           <div className="beta-content">
             <div className="beta-header">
               <h2 className="beta-title">
-                Únete a nuestra beta exclusiva
+                Únete a la beta gratuita de PhotoBoost
               </h2>
               <p className="beta-subtitle">
-                Nos gustaría conocer tu negocio. Cuéntanos sobre ti para ofrecerte una experiencia personalizada.
-                Solo trabajamos con agencias y profesionales que se alineen con nuestro servicio.
+                Acceso anticipado a nuestra herramienta de IA para fotos inmobiliarias. 10 fotos gratis cada mes durante la beta.
+                Solo necesitamos algunos datos básicos para comenzar.
               </p>
             </div>
 
             <form className="beta-form" onSubmit={handleSubmit}>
-              {/* Row 1: Name and Email */}
+              {/* Row 1: Name and WhatsApp */}
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="name">Nombre completo (obligatorio)</label>
+                  <label htmlFor="name">Nombre completo *</label>
                   <input
                     type="text"
                     id="name"
@@ -134,36 +123,35 @@ const BetaOffer = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="email">Email (obligatorio)</label>
+                  <label htmlFor="phone">WhatsApp *</label>
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="juan@empresa.com"
+                    placeholder="+54 9 11 1234-5678"
                     required
                   />
                 </div>
               </div>
 
-              {/* Row 2: Phone */}
+              {/* Row 2: Email */}
               <div className="form-group">
-                <label htmlFor="phone">WhatsApp / Teléfono (obligatorio)</label>
+                <label htmlFor="email">Email (opcional)</label>
                 <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="+54 9 11 1234-5678"
-                  required
+                  placeholder="juan@empresa.com"
                 />
               </div>
 
               {/* Row 3: Company Name */}
               <div className="form-group">
-                <label htmlFor="companyName">Nombre de la empresa (obligatorio)</label>
+                <label htmlFor="companyName">Nombre de la empresa</label>
                 <input
                   type="text"
                   id="companyName"
@@ -171,108 +159,7 @@ const BetaOffer = () => {
                   value={formData.companyName}
                   onChange={handleInputChange}
                   placeholder="Mi Empresa S.A."
-                  required
                 />
-              </div>
-
-              {/* Row 4: Business Size */}
-              <div className="form-group">
-                <label htmlFor="businessSize">¿Cuál es el tamaño de tu empresa?</label>
-                <select
-                  id="businessSize"
-                  name="businessSize"
-                  value={formData.businessSize}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una opción...</option>
-                  <option value="independiente">Independiente</option>
-                  <option value="1-5">1 - 5 personas</option>
-                  <option value="6-10">6 - 10 personas</option>
-                  <option value="11-20">11 - 20 personas</option>
-                  <option value="21-50">21 - 50 personas</option>
-                  <option value="51-100">51 - 100 personas</option>
-                  <option value="100+">100+ personas</option>
-                </select>
-              </div>
-
-              {/* Row 5: Monthly Photos */}
-              <div className="form-group">
-                <label htmlFor="monthlyPhotos">¿Cuántas fotos necesitas procesar mensualmente?</label>
-                <select
-                  id="monthlyPhotos"
-                  name="monthlyPhotos"
-                  value={formData.monthlyPhotos}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una opción...</option>
-                  <option value="menos-50">Menos de 50</option>
-                  <option value="50-100">50 - 100</option>
-                  <option value="100-150">100 - 150</option>
-                  <option value="150-200">150 - 200</option>
-                  <option value="200-250">200 - 250</option>
-                  <option value="250-300">250 - 300</option>
-                  <option value="300+">300+</option>
-                </select>
-              </div>
-
-              {/* Row 6: Current Process */}
-              <div className="form-group">
-                <label htmlFor="currentProcess">¿Cómo procesan actualmente las fotos?</label>
-                <select
-                  id="currentProcess"
-                  name="currentProcess"
-                  value={formData.currentProcess}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una opción...</option>
-                  <option value="manual">Manual (sin herramientas)</option>
-                  <option value="adobe">Adobe (Photoshop, Lightroom)</option>
-                  <option value="otras-herramientas">Otras herramientas automáticas</option>
-                  <option value="agencia-externa">Contratan a una agencia externa</option>
-                  <option value="freelancer">Contratan a un freelancer</option>
-                </select>
-              </div>
-
-              {/* Row 7: Main Challenge */}
-              <div className="form-group">
-                <label htmlFor="mainChallenge">¿Cuál es tu mayor desafío actual?</label>
-                <select
-                  id="mainChallenge"
-                  name="mainChallenge"
-                  value={formData.mainChallenge}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una opción...</option>
-                  <option value="tiempo">Falta de tiempo</option>
-                  <option value="costo">Costo elevado</option>
-                  <option value="calidad">Inconsistencia en calidad</option>
-                  <option value="escalabilidad">Dificultad para escalar</option>
-                  <option value="personal">No tengo personal capacitado</option>
-                  <option value="consistencia-marca">Consistencia de marca</option>
-                </select>
-              </div>
-
-              {/* Row 8: Price Per Photo */}
-              <div className="form-group">
-                <label htmlFor="pricePerPhoto">¿Cuánto estás dispuesto a pagar por foto mejorada con IA? (1-10)</label>
-                <select
-                  id="pricePerPhoto"
-                  name="pricePerPhoto"
-                  value={formData.pricePerPhoto}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una opción...</option>
-                  <option value="1">1 - USD 0.50 por foto</option>
-                  <option value="2">2 - USD 1.00 por foto</option>
-                  <option value="3">3 - USD 1.50 por foto</option>
-                  <option value="4">4 - USD 2.00 por foto</option>
-                  <option value="5">5 - USD 2.50 por foto</option>
-                  <option value="6">6 - USD 3.00 por foto</option>
-                  <option value="7">7 - USD 4.00 por foto</option>
-                  <option value="8">8 - USD 5.00 por foto</option>
-                  <option value="9">9 - USD 7.50 por foto</option>
-                  <option value="10">10 - USD 10.00+ por foto</option>
-                </select>
               </div>
 
               <button 
@@ -280,7 +167,7 @@ const BetaOffer = () => {
                 className="btn btn-primary btn-large btn-block"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Enviando...' : 'Enviar mi información →'}
+                {isSubmitting ? 'Registrando...' : 'Unirme a la Beta Gratis →'}
               </button>
 
               {submitStatus === 'error' && (
@@ -290,8 +177,8 @@ const BetaOffer = () => {
               )}
 
               <p className="form-disclaimer">
-                Al registrarte, aceptás recibir información sobre PhotoBoost.
-                <br />Sin spam, prometido.
+                Al unirte a la beta, recibirás acceso gratuito y actualizaciones por email.
+                <br />Podés darte de baja cuando quieras.
               </p>
             </form>
           </div>

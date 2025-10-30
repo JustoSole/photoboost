@@ -7,7 +7,7 @@
   padding: 1rem;
   background: var(--white);
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 100;
+  z-index: 100; /* Menor que header (z-index: 1000) para que no interfiera */
   transform: translateY(0);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

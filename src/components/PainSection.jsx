@@ -74,7 +74,7 @@ const PainSection = () => {
             <div className="feature">IA desarrollada en Argentina</div>
             <div className="feature">Hasta 30% más vistas en tus publicaciones</div>
           </div>
-          <a href="#beta" className="btn btn-primary">
+          <a href="#photo-demo" className="btn btn-primary">
             Probar ahora gratis
           </a>
         </motion.div>
