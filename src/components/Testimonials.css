@@ -5,9 +5,9 @@
 
 .testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -25,6 +25,12 @@
   border-color: var(--gray-300);
   box-shadow: var(--shadow-sm);
   background: var(--white);
+}
+
+.testimonial-card.featured-testimonial {
+  border-color: var(--accent-green);
+  background: linear-gradient(135deg, #ffffff, #f0fdf4);
+  box-shadow: var(--shadow-md);
 }
 
 .testimonial-rating {
@@ -84,6 +90,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
+}
+
+.testimonials-cta {
+  text-align: center;
+  margin-top: 3rem;
 }
 
 @media (max-width: 768px) {

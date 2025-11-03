@@ -155,13 +155,7 @@ const PhotoDemo = () => {
       return
     }
     
-    // Validar datos requeridos
-    if (!name || !whatsapp) {
-      setErrorMessage('Por favor, completa tu nombre y WhatsApp')
-      return
-    }
-    
-    // Validar email si está presente
+    // Validar email si está presente (ahora es opcional)
     if (email && email.trim()) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -169,6 +163,9 @@ const PhotoDemo = () => {
         return
       }
     }
+    
+    // Campos opcionales - solo validar si se proporcionan
+    // La demo funciona sin nombre ni WhatsApp
     
     setStatus('uploading')
     setErrorMessage('')
@@ -199,8 +196,8 @@ const PhotoDemo = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: name,
-          whatsapp: whatsapp,
+          name: name || undefined,
+          whatsapp: whatsapp || undefined,
           email: email || undefined,
           image: imageData,
           precio10Imagenes: precio10Imagenes || undefined
@@ -409,7 +406,7 @@ const PhotoDemo = () => {
             <div className="trial-limit-message">
               <p>¡Has alcanzado el límite de 3 pruebas gratuitas!</p>
               <p>Únete a nuestra beta para procesar fotos ilimitadas:</p>
-              <a href="#beta" className="btn-primary">
+              <a href="#beta" className="btn btn-primary">
                 🚀 Unirme a la Beta Gratis
               </a>
             </div>
@@ -423,28 +420,9 @@ const PhotoDemo = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="form-group">
-                <label htmlFor="name">Nombre completo *</label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Juan Pérez"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="whatsapp">WhatsApp *</label>
-                <input
-                  type="tel"
-                  id="whatsapp"
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                  placeholder="+54 9 11 1234-5678"
-                  required
-                />
+              <div className="demo-notice">
+                <p className="demo-notice-text">✨ Prueba sin registro. Solo necesitas subir tu foto</p>
+                <p className="demo-notice-subtitle">Resultados en segundos, sin esperas</p>
               </div>
               
               <div className="form-row">
@@ -459,6 +437,33 @@ const PhotoDemo = () => {
                   />
                 </div>
               </div>
+              
+              {/* Campos opcionales para unirse a beta después */}
+              {status === 'idle' && (
+                <details className="optional-fields">
+                  <summary className="optional-fields-summary">¿Quieres unirte a la beta? (opcional)</summary>
+                  <div className="form-group">
+                    <label htmlFor="name">Nombre completo</label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Juan Pérez"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="whatsapp">WhatsApp</label>
+                    <input
+                      type="tel"
+                      id="whatsapp"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      placeholder="+54 9 11 1234-5678"
+                    />
+                  </div>
+                </details>
+              )}
               
               {/* Upload de foto */}
               <div className="upload-area">
@@ -533,7 +538,7 @@ const PhotoDemo = () => {
               )}
               
               <button
-                className="btn-primary btn-process"
+                className="btn btn-primary btn-process"
                 onClick={handleProcessPhoto}
                 disabled={!originalImage || status === 'uploading' || status === 'processing'}
               >
@@ -634,6 +639,7 @@ const PhotoDemo = () => {
               <div className="result-header">
                 <h3>¡Tu foto está lista!</h3>
                 <p>Desliza para comparar antes y después</p>
+                <p className="result-high-res">📥 Descarga en alta resolución disponible</p>
               </div>
               
               {/* Slider Before/After */}
@@ -820,7 +826,7 @@ const PhotoDemo = () => {
                 
                 <div className="feedback-actions">
                   <button
-                    className="btn-primary btn-save-feedback"
+                    className="btn btn-primary btn-save-feedback"
                     onClick={handleSaveFeedback}
                     disabled={feedbackStatus === 'saving' || feedbackStatus === 'saved'}
                   >
@@ -834,7 +840,7 @@ const PhotoDemo = () => {
                   {feedbackStatus === 'saved' && !joinedBeta && (
                     <div className="post-feedback-message">
                       <p>¿Te gustó el resultado? ¡Unite a nuestra beta exclusiva!</p>
-                      <a href="#beta" className="btn-secondary btn-beta-cta">
+                      <a href="#beta" className="btn btn-secondary btn-beta-cta">
                         🚀 Ver Más Opciones Beta
                       </a>
                     </div>

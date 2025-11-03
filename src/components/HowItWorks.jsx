@@ -57,9 +57,14 @@ const HowItWorks = () => {
           <p className="subtext">
             Resultados uniformes, profesionales y con tono coherente en toda la propiedad.
           </p>
-          <a href="#photo-demo" className="btn btn-primary">
-            Probar ahora gratis
-          </a>
+          <div className="how-it-works-ctas">
+            <a href="#photo-demo" className="btn btn-primary">
+              Probar gratis
+            </a>
+            <a href="#pricing" className="btn btn-secondary">
+              Ver planes
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>

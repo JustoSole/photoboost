@@ -78,7 +78,7 @@ const Header = () => {
           <nav className="desktop-nav">
             <a href="#beneficios" className="nav-link">Beneficios</a>
             <a href="#how-it-works" className="nav-link">Cómo funciona</a>
-            <a href="#testimonios" className="nav-link">Testimonios</a>
+            <a href="#pricing" className="nav-link">Precios</a>
             <a href="#beta" className="nav-link">Beta</a>
           </nav>
 
@@ -105,7 +105,7 @@ const Header = () => {
         <div className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}>
           <a href="#beneficios" className="mobile-nav-link" onClick={handleNavClick}>Beneficios</a>
           <a href="#how-it-works" className="mobile-nav-link" onClick={handleNavClick}>Cómo funciona</a>
-          <a href="#testimonios" className="mobile-nav-link" onClick={handleNavClick}>Testimonios</a>
+          <a href="#pricing" className="mobile-nav-link" onClick={handleNavClick}>Precios</a>
           <a href="#beta" className="mobile-nav-link" onClick={handleNavClick}>Beta</a>
           <div className="mobile-nav-cta-wrapper">
             <a href="#photo-demo" className="btn btn-primary mobile-nav-cta" onClick={handleNavClick}>

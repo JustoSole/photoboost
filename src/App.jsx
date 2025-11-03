@@ -4,7 +4,9 @@ import Hero from './components/Hero'
 import PainSection from './components/PainSection'
 import HowItWorks from './components/HowItWorks'
 import SalesBoost from './components/SalesBoost'
-import Testimonials from './components/Testimonials'
+import TrustBadges from './components/TrustBadges'
+import Pricing from './components/Pricing'
+import FAQ from './components/FAQ'
 import BetaOffer from './components/BetaOffer'
 import PhotoDemo from './components/PhotoDemo'
 import Footer from './components/Footer'
@@ -28,8 +30,10 @@ function App() {
       <PainSection />
       <HowItWorks />
       <PhotoDemo />
+      <TrustBadges />
+      <Pricing />
+      <FAQ />
       <SalesBoost />
-      <Testimonials />
       <BetaOffer />
       <Footer />
       <MobileCTA />

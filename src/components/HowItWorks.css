@@ -90,6 +90,23 @@
   margin-right: auto;
 }
 
+.how-it-works-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+}
+
+.how-it-works-ctas .btn {
+  min-width: 160px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
 @media (max-width: 768px) {
   .steps-container {
     grid-template-columns: 1fr;
@@ -98,6 +115,29 @@
 
   .step-card {
     padding: 2.5rem 1.5rem;
+  }
+
+  .how-it-works-ctas {
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .how-it-works-ctas .btn {
+    width: 100%;
+    max-width: 300px;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .how-it-works-footer .subtext {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .how-it-works-ctas .btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
   }
 }
 

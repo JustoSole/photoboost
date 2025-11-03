@@ -6,54 +6,112 @@ import './Pricing.css'
 
 const plans = [
   {
-    name: 'Starter',
-    price: 5,
-    period: 'una vez',
-    features: [
-      '5 fotos / propiedad',
-      'Procesamiento instantáneo',
-      'Descarga en alta resolución',
-      'Mejora de luz y color',
-      'Corrección de perspectiva'
-    ],
+    name: 'Pay as you go',
+    credits: 1,
+    totalPrice: 1,
+    pricePerPhoto: 1.00,
+    savings: null,
+    idealFor: 'Usuarios ocasionales',
     highlight: false,
-    cta: 'Comenzar'
+    badge: null,
+    features: [
+      'Mejora de luz, color, nitidez',
+      'HDR automático',
+      'Reemplazo de cielo',
+      'Resultados en segundos',
+      'Descarga en alta resolución',
+      'Sin marca de agua',
+      'Soporte por WhatsApp/email'
+    ]
   },
   {
-    name: 'Pro',
-    price: 20,
-    period: 'mes',
+    name: 'Inicial',
+    credits: 30,
+    totalPrice: 24,
+    pricePerPhoto: 0.80,
+    savings: '20%',
+    idealFor: 'Agentes con pocas propiedades',
+    highlight: false,
+    badge: 'Ahorra 20%',
     features: [
-      '25 fotos / mes',
-      'Procesamiento prioritario',
+      'Mejora de luz, color, nitidez',
+      'HDR automático',
+      'Reemplazo de cielo',
+      'Resultados en segundos',
       'Descarga en alta resolución',
-      'Mejora avanzada de IA',
-      'Corrección de perspectiva',
-      'Soporte por email',
-      'Historial ilimitado'
-    ],
+      'Sin marca de agua',
+      'Soporte por WhatsApp/email'
+    ]
+  },
+  {
+    name: 'Profesional',
+    credits: 50,
+    totalPrice: 35,
+    pricePerPhoto: 0.70,
+    savings: '30%',
+    idealFor: 'Agencias medianas',
     highlight: true,
-    cta: 'Comenzar prueba'
+    badge: 'Más Popular',
+    features: [
+      'Mejora de luz, color, nitidez',
+      'HDR automático',
+      'Reemplazo de cielo',
+      'Resultados en segundos',
+      'Descarga en alta resolución',
+      'Sin marca de agua',
+      'Soporte por WhatsApp/email'
+    ]
   },
   {
-    name: 'Agencia',
-    price: 60,
-    period: 'mes',
-    features: [
-      '100 fotos / mes',
-      'Procesamiento ultra rápido',
-      'Descarga en alta resolución',
-      'Mejora avanzada de IA',
-      'Corrección de perspectiva',
-      'Soporte prioritario 24/7',
-      'Historial ilimitado',
-      'API access',
-      'Marca personalizada'
-    ],
+    name: 'Avanzado',
+    credits: 100,
+    totalPrice: 60,
+    pricePerPhoto: 0.60,
+    savings: '40%',
+    idealFor: 'Fotógrafos/inmobiliarias alto volumen',
     highlight: false,
-    cta: 'Contactar ventas'
+    badge: 'Mejor Valor',
+    features: [
+      'Mejora de luz, color, nitidez',
+      'HDR automático',
+      'Reemplazo de cielo',
+      'Resultados en segundos',
+      'Descarga en alta resolución',
+      'Sin marca de agua',
+      'Soporte por WhatsApp/email'
+    ]
+  },
+  {
+    name: 'Enterprise',
+    credits: 'Personalizado',
+    totalPrice: 'A medida',
+    pricePerPhoto: '-',
+    savings: null,
+    idealFor: 'Grandes agencias/portales',
+    highlight: false,
+    badge: 'Contactar',
+    isEnterprise: true,
+    features: [
+      'Más de 100 fotos/mes',
+      'API access',
+      'Soporte dedicado',
+      'Planes personalizados',
+      'Integraciones personalizadas',
+      'SLA garantizado',
+      'Sin marca de agua'
+    ]
   }
 ]
+
+const whatsappNumber = '5492944806519'
+
+const getWhatsAppLink = (planName) => {
+  const message = encodeURIComponent(`Quiero usar el plan ${planName}`)
+  return `https://wa.me/${whatsappNumber}?text=${message}`
+}
+
+const whatsappMessage = encodeURIComponent('Hola, me interesa el plan Enterprise de PhotoBoost')
+const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
 const Pricing = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 })
@@ -61,6 +119,14 @@ const Pricing = () => {
   const handlePlanClick = (planName, price) => {
     trackPricingClick(planName, price)
   }
+
+  const handleEnterpriseClick = () => {
+    trackPricingClick('Enterprise', 'custom')
+  }
+
+  // Separar planes regulares de Enterprise
+  const regularPlans = plans.filter(plan => !plan.isEnterprise)
+  const enterprisePlan = plans.find(plan => plan.isEnterprise)
 
   return (
     <section className="pricing" id="pricing" ref={ref}>
@@ -71,7 +137,7 @@ const Pricing = () => {
           transition={{ duration: 0.5 }}
           className="section-title"
         >
-          Planes simples
+          Planes simples y transparentes
         </motion.h2>
         
         <motion.p
@@ -83,55 +149,128 @@ const Pricing = () => {
           Elegí el plan que mejor se adapte a tus necesidades. Sin permanencias ni costos ocultos.
         </motion.p>
 
-        <div className="pricing-grid">
-          {plans.map((plan, index) => (
+        {/* Grid de planes regulares */}
+        <div className="pricing-grid-main">
+          {regularPlans.map((plan, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`pricing-card ${plan.highlight ? 'featured' : ''}`}
             >
-              {plan.highlight && <div className="popular-badge">Más popular</div>}
+              {plan.badge && (
+                <div className={`pricing-badge ${plan.highlight ? 'badge-popular' : 'badge-savings'}`}>
+                  {plan.badge}
+                </div>
+              )}
               
-              <div className="pricing-header">
-                <h3>{plan.name}</h3>
+              <div className="pricing-card-header">
+                <h3 className="plan-name">{plan.name}</h3>
+                <p className="plan-ideal-for">{plan.idealFor}</p>
               </div>
 
-              <div className="pricing-price">
-                <span className="currency">USD</span>
-                <span className="amount">{plan.price}</span>
-                <span className="period">/{plan.period}</span>
+              <div className="pricing-card-price">
+                <div className="price-main">
+                  <span className="currency">USD</span>
+                  <span className="amount">{plan.totalPrice}</span>
+                </div>
+                <div className="price-details">
+                  <span className="price-per-photo">USD {plan.pricePerPhoto.toFixed(2)} / foto</span>
+                  <span className="credits-count">{plan.credits} créditos</span>
+                </div>
+                {plan.savings && (
+                  <div className="savings-indicator">
+                    Ahorra {plan.savings}
+                  </div>
+                )}
               </div>
 
-              <ul className="pricing-features">
-                {plan.features.map((feature, i) => (
-                  <li key={i}>
-                    <FiCheck className="check-icon" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="pricing-card-features">
+                <ul className="features-list">
+                  {plan.features.map((feature, i) => (
+                    <li key={i}>
+                      <FiCheck className="check-icon" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-              <a 
-                href="#photo-demo" 
-                className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'} btn-block`}
-                onClick={() => handlePlanClick(plan.name, plan.price)}
-              >
-                Probar gratis
-              </a>
+              <div className="pricing-card-cta">
+                <a
+                  href={getWhatsAppLink(plan.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => handlePlanClick(plan.name, plan.totalPrice)}
+                >
+                  Consulta ahora
+                </a>
+              </div>
             </motion.div>
           ))}
         </div>
 
+        {/* Plan Enterprise separado y destacado */}
+        {enterprisePlan && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="enterprise-section"
+          >
+            <div className="pricing-card enterprise">
+              <div className={`pricing-badge badge-enterprise`}>
+                {enterprisePlan.badge}
+              </div>
+              
+              <div className="pricing-card-header">
+                <h3 className="plan-name">{enterprisePlan.name}</h3>
+                <p className="plan-ideal-for">{enterprisePlan.idealFor}</p>
+              </div>
+
+              <div className="pricing-card-price enterprise-price-container">
+                <div className="enterprise-price">
+                  <span className="enterprise-label">Precio</span>
+                  <span className="enterprise-value">Personalizado</span>
+                </div>
+              </div>
+
+              <div className="pricing-card-features">
+                <ul className="features-list">
+                  {enterprisePlan.features.map((feature, i) => (
+                    <li key={i}>
+                      <FiCheck className="check-icon" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pricing-card-cta">
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-enterprise"
+                  onClick={handleEnterpriseClick}
+                >
+                  Solicitar presupuesto
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
           className="pricing-footer"
         >
           <p className="footer-note">
-            Pagá solo por lo que usás. Cancelá cuando quieras.
+            Pagá solo por lo que usás. Cancelá cuando quieras. Los créditos no expiran.
           </p>
         </motion.div>
       </div>
@@ -140,4 +279,3 @@ const Pricing = () => {
 }
 
 export default Pricing
-

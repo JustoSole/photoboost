@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "check-setup": "node scripts/check-setup.js",
     "process-images": "node scripts/process-images.js",
-    "test-airtable": "node scripts/test-airtable.js"
+    "test-airtable": "node scripts/test-airtable.js",
+    "verify-airtable": "node scripts/verify-airtable.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

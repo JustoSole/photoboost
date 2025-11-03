@@ -9,31 +9,50 @@ const examples = [
     id: 1,
     before: '/demo-properties/before/casa_cielo_gris_mala_calidad.webp',
     after: '/demo-properties/after/casa_cielo_gris_mala_calidad.webp',
-    title: 'Casa con cielo gris mejorado'
+    title: 'Casa con cielo gris mejorado',
+    tags: ['Cielo reemplazado', 'HDR automático', 'Corrección de iluminación']
   },
   {
     id: 2,
     before: '/demo-properties/before/AIEnhancement_depto.webp',
     after: '/demo-properties/after/AIEnhancement_depto.webp',
-    title: 'Departamento moderno'
+    title: 'Departamento moderno',
+    tags: ['Mejora de color', 'Recuperación de nitidez']
   },
   {
     id: 3,
     before: '/demo-properties/before/depto_anocheciendo.webp',
     after: '/demo-properties/after/depto_anocheciendo.webp',
-    title: 'Departamento al anochecer'
+    title: 'Departamento al anochecer',
+    tags: ['Corrección de iluminación', 'HDR automático']
   },
   {
     id: 4,
     before: '/demo-properties/before/PHOTO5_CIELOGRIS_SATURADA.jpg',
     after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg',
-    title: 'Cielo gris saturado corregido'
+    title: 'Cielo gris saturado corregido',
+    tags: ['Cielo reemplazado', 'Corrección de color']
   },
   {
     id: 5,
     before: '/demo-properties/before/casa_mala_img.webp',
     after: '/demo-properties/after/casa_mala_img.webp',
-    title: 'Casa con calidad mejorada'
+    title: 'Casa con calidad mejorada',
+    tags: ['Recuperación de nitidez', 'Mejora de color']
+  },
+  {
+    id: 6,
+    before: '/demo-properties/before/depto_oscuro_1.webp',
+    after: '/demo-properties/after/depto_oscuro_1.webp',
+    title: 'Departamento oscuro iluminado',
+    tags: ['Corrección de iluminación', 'HDR automático']
+  },
+  {
+    id: 7,
+    before: '/demo-properties/before/depto_gris_angulo_malo.webp',
+    after: '/demo-properties/after/depto_gris_angulo_malo.webp',
+    title: 'Departamento con ángulo mejorado',
+    tags: ['Mejora de color', 'Corrección de iluminación']
   }
 ]
 
@@ -266,6 +285,9 @@ const Hero = () => {
         >
           <a href="#photo-demo" className="btn btn-primary btn-large" onClick={handleCTAClick}>
             Probar ahora gratis →
+          </a>
+          <a href="#pricing" className="btn btn-secondary btn-large" onClick={() => trackCTAClick('Ver planes', 'hero_section')}>
+            Ver planes
           </a>
           <p className="cta-subtext">Sin tarjeta. Sin compromiso. Acceso anticipado gratis.</p>
         </motion.div>

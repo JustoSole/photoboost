@@ -19,6 +19,22 @@ const testimonials = [
     role: 'Directora Comercial',
     content: 'Es increíble. Reducimos costos de fotografía en un 85% y ganamos velocidad. Lo que tardaba 5 días ahora lo hacemos en minutos. Ya es parte de nuestro workflow diario.',
     rating: 5
+  },
+  {
+    id: 3,
+    name: 'Carlos Mendoza',
+    company: 'Mendoza Real Estate',
+    role: 'CEO',
+    content: 'La calidad es profesional y el tiempo de procesamiento es instantáneo. Hemos mejorado significativamente la presentación de nuestras propiedades.',
+    rating: 5
+  },
+  {
+    id: 4,
+    name: 'Laura Fernández',
+    company: 'Inmobiliaria Premium',
+    role: 'Fotógrafa Profesional',
+    content: 'PhotoBoost complementa perfectamente nuestro trabajo. Usamos la IA para ajustes rápidos y mantenemos calidad premium en cada imagen.',
+    rating: 5
   }
 ]
 
@@ -44,7 +60,7 @@ const Testimonials = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="testimonial-card"
+              className={`testimonial-card ${index === 0 ? 'featured-testimonial' : ''}`}
             >
               <div className="testimonial-rating">
                 {[...Array(testimonial.rating)].map((_, i) => (
@@ -66,6 +82,17 @@ const Testimonials = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="testimonials-cta"
+        >
+          <a href="#photo-demo" className="btn btn-primary">
+            Únete ahora
+          </a>
+        </motion.div>
       </div>
     </section>
   )

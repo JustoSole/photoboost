@@ -18,6 +18,12 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="container">
+        <div className="footer-cta-section">
+          <h3 className="footer-cta-title">¿Listo para mejorar tus fotos?</h3>
+          <a href="#photo-demo" className="btn btn-primary footer-cta-btn">
+            Empezar ahora
+          </a>
+        </div>
         <div className="footer-content">
           <div className="footer-brand">
             <Logo />

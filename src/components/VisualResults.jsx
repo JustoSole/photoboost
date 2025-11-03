@@ -9,31 +9,50 @@ const imagePairs = [
     id: 1,
     title: 'Casa con cielo gris mejorado',
     before: '/demo-properties/before/casa_cielo_gris_mala_calidad.webp',
-    after: '/demo-properties/after/casa_cielo_gris_mala_calidad.webp'
+    after: '/demo-properties/after/casa_cielo_gris_mala_calidad.webp',
+    tags: ['Cielo reemplazado', 'HDR automático']
   },
   {
     id: 2,
     title: 'Departamento moderno',
     before: '/demo-properties/before/AIEnhancement_depto.webp',
-    after: '/demo-properties/after/AIEnhancement_depto.webp'
+    after: '/demo-properties/after/AIEnhancement_depto.webp',
+    tags: ['Mejora de color', 'Recuperación de nitidez']
   },
   {
     id: 3,
     title: 'Departamento al anochecer',
     before: '/demo-properties/before/depto_anocheciendo.webp',
-    after: '/demo-properties/after/depto_anocheciendo.webp'
+    after: '/demo-properties/after/depto_anocheciendo.webp',
+    tags: ['Corrección de iluminación']
   },
   {
     id: 4,
     title: 'Cielo gris saturado corregido',
     before: '/demo-properties/before/PHOTO5_CIELOGRIS_SATURADA.jpg',
-    after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg'
+    after: '/demo-properties/after/PHOTO5_CIELOGRIS_SATURADA.jpg',
+    tags: ['Cielo reemplazado', 'Corrección de color']
   },
   {
     id: 5,
     title: 'Casa con calidad mejorada',
     before: '/demo-properties/before/casa_mala_img.webp',
-    after: '/demo-properties/after/casa_mala_img.webp'
+    after: '/demo-properties/after/casa_mala_img.webp',
+    tags: ['Recuperación de nitidez']
+  },
+  {
+    id: 6,
+    title: 'Departamento oscuro iluminado',
+    before: '/demo-properties/before/depto_oscuro_1.webp',
+    after: '/demo-properties/after/depto_oscuro_1.webp',
+    tags: ['Corrección de iluminación', 'HDR automático']
+  },
+  {
+    id: 7,
+    title: 'Departamento con ángulo mejorado',
+    before: '/demo-properties/before/depto_gris_angulo_malo.webp',
+    after: '/demo-properties/after/depto_gris_angulo_malo.webp',
+    tags: ['Mejora de color']
   }
 ]
 
@@ -262,7 +281,7 @@ const VisualResults = () => {
           </div>
         </div>
 
-        {/* CTA */}
+          {/* CTA */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
@@ -275,6 +294,13 @@ const VisualResults = () => {
             onClick={() => trackCTAClick('Probar ahora gratis', 'visual_results_section')}
           >
             Probar ahora gratis
+          </a>
+          <a 
+            href="#pricing" 
+            className="btn btn-secondary"
+            onClick={() => trackCTAClick('Ver precios', 'visual_results_section')}
+          >
+            Ver precios
           </a>
         </motion.div>
       </div>
